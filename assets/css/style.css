@@ -170,3 +170,4 @@ h3 { font: 600 1.15rem var(--body); }
 .rm-check input { width: 18px; height: 18px; accent-color: var(--teal); }
 .band.rm-teaser { padding-block: 0 56px; margin-top: -24px; }
 .rm-branch[hidden] { display: none; }
+.rm-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px !important; }

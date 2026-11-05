@@ -7,6 +7,14 @@
   var done = {};
   try { done = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { done = {}; }
   var byId = {}, leaves = [];
+  var REPO = 'https://github.com/AbbasiSarah/ml-roadmap';
+  var STAGE_PROJECT = { python: '01-expense-analyser', math: '02-gradient-descent', data: '03-data-cleaning',
+    'classic-ml': '04-model-comparison', 'deep-learning': '05-neural-net-from-scratch',
+    specialise: '06-forecasting-and-rag', deploy: '07-model-api', career: '08-portfolio-readme' };
+  function rootOf(n) { while (n.parent) n = n.parent; return n; }
+  function pad(i) { return (i < 10 ? '0' : '') + i; }
+  function notesUrl(n) { var r = rootOf(n); return REPO + '/blob/main/notes/' + pad(data.indexOf(r) + 1) + '-' + r.id + '/' + n.id + '.md'; }
+  function projectUrl(r) { return STAGE_PROJECT[r.id] ? REPO + '/tree/main/projects/' + STAGE_PROJECT[r.id] : null; }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -111,8 +119,11 @@
       html += '<p>' + esc(n.summary || n.about || '') + '</p>' + (n.weeks ? '<p class="rm-meta">Suggested time: ' + esc(n.weeks) + '</p>' : '') +
         '<p class="rm-meta">Topics in this branch:</p><ul class="rm-list">' +
         n.children.map(function (k) { return '<li><a href="#' + esc(k.id) + '" data-go="' + esc(k.id) + '">' + esc(k.title) + '</a></li>'; }).join('') + '</ul>';
+      if (!n.parent && projectUrl(n)) html += '<p class="rm-actions"><a class="btn primary small" href="' + projectUrl(n) + '" target="_blank" rel="noopener noreferrer">Stage project (code)</a></p>';
     } else {
-      html += '<p>' + esc(n.about) + '</p>';
+      html += '<p>' + esc(n.about) + '</p>' +
+        '<p class="rm-actions"><a class="btn primary small" href="' + notesUrl(n) + '" target="_blank" rel="noopener noreferrer">My notes + code example</a>' +
+        (projectUrl(rootOf(n)) ? ' <a class="btn small" href="' + projectUrl(rootOf(n)) + '" target="_blank" rel="noopener noreferrer">Stage project</a>' : '') + '</p>';
       if (n.resources && n.resources.length) {
         html += '<h3 class="rm-h3">Resources</h3><ul class="rm-res">' + n.resources.map(function (r) {
           return '<li><a href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener noreferrer">' + esc(r.name) + '</a>' +
