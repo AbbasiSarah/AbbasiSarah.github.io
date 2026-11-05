@@ -29,6 +29,10 @@ Your text here. Use ## for a heading, **bold**, and [link text](https://...).
 ## Add or edit a project
 Open `_data/projects.yml`, click the pencil, copy one project block and change the words.
 
+## Edit the ML Roadmap
+Open `_data/roadmap.yml`, click the pencil, and edit the topics, resources or projects.
+Keep the same spacing (indentation) as the lines around your change: YAML is picky about spaces.
+
 ## Change your links (Instagram, LinkedIn, email)
 Open `_config.yml`, click the pencil, and edit the addresses in quotes.
 

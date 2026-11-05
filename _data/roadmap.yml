@@ -1,0 +1,288 @@
+# Machine Learning Roadmap: edit this file to change the tree on /roadmap/
+# Each stage has topics; a topic can have its own "children" (a branch).
+# trending: true shows a "Trending" badge. Resource "cost" is free or paid.
+
+- id: python
+  title: Python & Tools
+  weeks: "3–4 weeks"
+  summary: The language and tools every ML project uses.
+  children:
+    - id: python-basics
+      title: Python basics
+      about: Variables, loops, functions, lists, dictionaries and reading files. You need to be comfortable writing small programs before anything else.
+      resources:
+        - { name: "Python official tutorial", url: "https://docs.python.org/3/tutorial/", cost: free, kind: Docs }
+        - { name: "Kaggle Learn: Python", url: "https://www.kaggle.com/learn/python", cost: free, kind: Course }
+      project: Write a script that reads a CSV of your expenses and prints the total per category.
+    - id: numpy
+      title: NumPy
+      about: Fast maths on arrays and matrices, the foundation of almost every ML library.
+      resources:
+        - { name: "NumPy: learn", url: "https://numpy.org/learn/", cost: free, kind: Docs }
+      project: Re-create a 3×3 image blur using only NumPy array operations.
+    - id: pandas
+      title: Pandas
+      about: Tables in Python. Load, filter, group, join and clean data.
+      resources:
+        - { name: "Kaggle Learn: Pandas", url: "https://www.kaggle.com/learn/pandas", cost: free, kind: Course }
+        - { name: "pandas getting started", url: "https://pandas.pydata.org/docs/getting_started/index.html", cost: free, kind: Docs }
+      project: Analyse a public dataset (e.g. cricket or weather) and answer three questions with group-by tables.
+    - id: visualisation
+      title: Data visualisation
+      about: Matplotlib and Seaborn to turn numbers into charts that show patterns at a glance.
+      resources:
+        - { name: "Kaggle Learn: Data Visualization", url: "https://www.kaggle.com/learn/data-visualization", cost: free, kind: Course }
+      project: Make one clear chart that answers one question, with a title that states the finding.
+    - id: git
+      title: Git & GitHub
+      about: Save versions of your code and share projects. Your GitHub is your ML portfolio.
+      resources:
+        - { name: "GitHub Skills", url: "https://skills.github.com/", cost: free, kind: Course }
+      project: Put your first analysis on GitHub with a README that explains it.
+
+- id: math
+  title: Math for ML
+  weeks: "4–6 weeks (alongside coding)"
+  summary: Just enough math to understand why models work. Learn it visually, not by memorising.
+  children:
+    - id: linear-algebra
+      title: Linear algebra
+      about: Vectors, matrices and matrix multiplication. Data is a matrix; a neural network layer is a matrix multiply.
+      resources:
+        - { name: "3Blue1Brown: Essence of linear algebra", url: "https://www.3blue1brown.com/topics/linear-algebra", cost: free, kind: Video }
+        - { name: "Mathematics for Machine Learning (book)", url: "https://mml-book.github.io/", cost: free, kind: Book }
+      project: Implement matrix multiplication with plain loops, then check it against NumPy.
+    - id: calculus
+      title: Calculus & gradients
+      about: Derivatives tell a model which way to change its weights. This is how all training works (gradient descent).
+      resources:
+        - { name: "3Blue1Brown: Essence of calculus", url: "https://www.3blue1brown.com/topics/calculus", cost: free, kind: Video }
+      project: Use gradient descent to find the minimum of y = (x − 3)² and plot each step.
+    - id: stats
+      title: Probability & statistics
+      about: Mean, variance, distributions, correlation and hypothesis tests, the language for measuring uncertainty.
+      resources:
+        - { name: "Khan Academy: Statistics & probability", url: "https://www.khanacademy.org/math/statistics-probability", cost: free, kind: Course }
+        - { name: "StatQuest (Josh Starmer)", url: "https://statquest.org/", cost: free, kind: Video }
+      project: Simulate 10,000 coin flips and show the law of large numbers in a chart.
+
+- id: data
+  title: Data Skills
+  weeks: "3–4 weeks"
+  summary: Real data is messy. Most ML work is preparing data well.
+  children:
+    - id: cleaning
+      title: Data cleaning
+      about: Missing values, duplicates, wrong types and outliers. Garbage in, garbage out.
+      resources:
+        - { name: "Kaggle Learn: Data Cleaning", url: "https://www.kaggle.com/learn/data-cleaning", cost: free, kind: Course }
+      project: Find and fix every problem in a messy dataset, and write down what you changed.
+    - id: eda
+      title: Exploratory data analysis
+      about: Look before you model. Distributions, relationships and surprises in the data.
+      resources:
+        - { name: "Kaggle Learn: Data Visualization", url: "https://www.kaggle.com/learn/data-visualization", cost: free, kind: Course }
+      project: Write a one-page EDA report with five findings and one chart each.
+    - id: features
+      title: Feature engineering
+      about: Turning raw columns into signals a model can learn from, such as ratios, dates and categories.
+      resources:
+        - { name: "Kaggle Learn: Feature Engineering", url: "https://www.kaggle.com/learn/feature-engineering", cost: free, kind: Course }
+      project: Add three engineered features to a dataset and measure whether the model improves.
+    - id: sql
+      title: SQL
+      about: Most company data lives in databases. SQL is how you get it out.
+      resources:
+        - { name: "Kaggle Learn: Intro to SQL", url: "https://www.kaggle.com/learn/intro-to-sql", cost: free, kind: Course }
+      project: Answer five business questions on a public database using only SQL.
+
+- id: classic-ml
+  title: Classic Machine Learning
+  weeks: "6–8 weeks"
+  summary: The algorithms that solve most real business problems, and how to test them honestly.
+  children:
+    - id: supervised
+      title: Regression & classification
+      about: Predict a number (house price) or a category (spam or not) from examples with known answers.
+      resources:
+        - { name: "Google Machine Learning Crash Course", url: "https://developers.google.com/machine-learning/crash-course", cost: free, kind: Course }
+        - { name: "Andrew Ng: Machine Learning Specialization", url: "https://www.coursera.org/specializations/machine-learning-introduction", cost: paid, kind: Course }
+        - { name: "Kaggle Learn: Intro to Machine Learning", url: "https://www.kaggle.com/learn/intro-to-machine-learning", cost: free, kind: Course }
+      project: "Predict house prices; see my example: California House Prices."
+      example: https://github.com/AbbasiSarah/california-house-prices
+    - id: trees
+      title: Trees, forests & boosting
+      about: Decision trees, random forests and gradient boosting, the top performers on table data.
+      resources:
+        - { name: "Kaggle Learn: Intermediate Machine Learning", url: "https://www.kaggle.com/learn/intermediate-machine-learning", cost: free, kind: Course }
+        - { name: "An Introduction to Statistical Learning (book)", url: "https://www.statlearning.com/", cost: free, kind: Book }
+      project: Compare a decision tree, random forest and gradient boosting on one dataset.
+    - id: unsupervised
+      title: Clustering & PCA
+      about: Find groups and patterns without labels, such as customer segments, and shrink many columns into a few.
+      resources:
+        - { name: "scikit-learn: clustering guide", url: "https://scikit-learn.org/stable/modules/clustering.html", cost: free, kind: Docs }
+      project: Segment customers of a shopping dataset into groups and describe each group.
+    - id: evaluation
+      title: Evaluation & avoiding leakage
+      about: Cross-validation, precision and recall, and keeping test data truly unseen. This is the skill that separates honest results from fake 99% accuracy.
+      resources:
+        - { name: "scikit-learn: model evaluation", url: "https://scikit-learn.org/stable/modules/model_evaluation.html", cost: free, kind: Docs }
+        - { name: "Kaggle Learn: Intermediate ML (data leakage)", url: "https://www.kaggle.com/learn/intermediate-machine-learning", cost: free, kind: Course }
+      project: "Build a spam filter and report precision, recall and false alarms; see my example: SMS Spam Classifier."
+      example: https://github.com/AbbasiSarah/sms-spam-classifier
+
+- id: deep-learning
+  title: Deep Learning
+  weeks: "8–10 weeks"
+  summary: Neural networks, the engine behind image, speech and language AI.
+  children:
+    - id: neural-nets
+      title: Neural networks & backpropagation
+      about: Layers, activations, loss and how gradients flow backwards to train the network.
+      resources:
+        - { name: "3Blue1Brown: Neural networks", url: "https://www.3blue1brown.com/topics/neural-networks", cost: free, kind: Video }
+        - { name: "Andrej Karpathy: Neural Networks, Zero to Hero", url: "https://karpathy.ai/zero-to-hero.html", cost: free, kind: Video }
+      project: Build a tiny neural network from scratch in NumPy that learns XOR.
+    - id: pytorch
+      title: PyTorch
+      about: The most popular deep learning framework in research and industry.
+      resources:
+        - { name: "PyTorch tutorials", url: "https://pytorch.org/tutorials/", cost: free, kind: Docs }
+        - { name: "fast.ai: Practical Deep Learning", url: "https://course.fast.ai/", cost: free, kind: Course }
+      project: Train an image classifier on your own photos with PyTorch.
+    - id: cnn
+      title: CNNs for images
+      about: Convolutional networks that see edges, shapes and objects.
+      resources:
+        - { name: "Dive into Deep Learning (book)", url: "https://d2l.ai/", cost: free, kind: Book }
+        - { name: "Stanford CS231n notes", url: "https://cs231n.github.io/", cost: free, kind: Course }
+      project: "Handwritten digit recognition with a live demo; see my example: Digit CNN."
+      example: https://abbasisarah.github.io/handwritten-digit-cnn/
+    - id: transformers
+      title: Transformers & attention
+      about: The architecture behind ChatGPT and modern AI, which learns which words to pay attention to.
+      trending: true
+      resources:
+        - { name: "Karpathy: Let's build GPT (in Zero to Hero)", url: "https://karpathy.ai/zero-to-hero.html", cost: free, kind: Video }
+        - { name: "Hugging Face LLM Course", url: "https://huggingface.co/learn/llm-course", cost: free, kind: Course }
+      project: Fine-tune a small pretrained transformer to classify Urdu or English text.
+
+- id: specialise
+  title: Choose a Specialisation
+  weeks: "8–12 weeks"
+  summary: Go deep in one branch. Employers hire specialists.
+  children:
+    - id: llms
+      title: LLMs & Generative AI
+      about: Build applications on top of large language models, the fastest-growing area of AI.
+      trending: true
+      children:
+        - id: prompting
+          title: Prompt engineering
+          about: Writing clear instructions, examples and structured output requests for LLMs.
+          trending: true
+          resources:
+            - { name: "DeepLearning.AI short courses", url: "https://www.deeplearning.ai/short-courses/", cost: free, kind: Course }
+          project: Build a prompt that turns messy meeting notes into a clean task list.
+        - id: rag
+          title: RAG (chat with your documents)
+          about: Retrieval-augmented generation lets an LLM answer from your own PDFs and data instead of guessing.
+          trending: true
+          resources:
+            - { name: "DeepLearning.AI short courses (RAG)", url: "https://www.deeplearning.ai/short-courses/", cost: free, kind: Course }
+            - { name: "Hugging Face LLM Course", url: "https://huggingface.co/learn/llm-course", cost: free, kind: Course }
+          project: A chatbot that answers questions from your university's course handbook.
+        - id: fine-tuning
+          title: Fine-tuning
+          about: Teach an open model a new style or task with your own examples.
+          trending: true
+          resources:
+            - { name: "Hugging Face LLM Course", url: "https://huggingface.co/learn/llm-course", cost: free, kind: Course }
+          project: Fine-tune a small model to write replies in Roman Urdu.
+        - id: agents
+          title: AI agents
+          about: LLMs that plan, use tools and complete multi-step tasks on their own.
+          trending: true
+          resources:
+            - { name: "Hugging Face Agents Course", url: "https://huggingface.co/learn/agents-course", cost: free, kind: Course }
+          project: An agent that searches the web and writes a short research summary with sources.
+    - id: vision
+      title: Computer Vision
+      about: Teach machines to see. Detection, segmentation and medical imaging.
+      resources:
+        - { name: "Hugging Face Computer Vision Course", url: "https://huggingface.co/learn/computer-vision-course", cost: free, kind: Course }
+        - { name: "Stanford CS231n notes", url: "https://cs231n.github.io/", cost: free, kind: Course }
+      project: Detect and count objects (e.g. cars) in photos from your city.
+    - id: time-series
+      title: Time Series & Forecasting
+      about: Predict the future from the past, such as sales, demand, weather and health signals. Every business needs it.
+      resources:
+        - { name: "Forecasting: Principles and Practice (book)", url: "https://otexts.com/fpp3/", cost: free, kind: Book }
+        - { name: "Kaggle Learn: Time Series", url: "https://www.kaggle.com/learn/time-series", cost: free, kind: Course }
+      project: "Forecast next month's sales; or see my health research: depression detection from activity data."
+      example: https://abbasisarah.github.io/depression-bipolar_CNN/
+    - id: diffusion
+      title: Image generation
+      about: Diffusion models create images from text prompts.
+      trending: true
+      resources:
+        - { name: "Hugging Face Diffusion Course", url: "https://huggingface.co/learn/diffusion-course", cost: free, kind: Course }
+      project: Generate images in a custom style and explain how diffusion denoises step by step.
+
+- id: deploy
+  title: Deploy & MLOps
+  weeks: "4–6 weeks"
+  summary: A model is only useful when people can use it.
+  children:
+    - id: demos
+      title: Web demos
+      about: Turn a model into an app people can try, using Streamlit, Gradio or Hugging Face Spaces.
+      resources:
+        - { name: "Hugging Face Spaces docs", url: "https://huggingface.co/docs/hub/spaces", cost: free, kind: Docs }
+        - { name: "Streamlit docs", url: "https://docs.streamlit.io/", cost: free, kind: Docs }
+      project: Publish one of your models as a free web app and share the link.
+    - id: apis
+      title: APIs & Docker
+      about: Serve predictions through an API and package everything so it runs anywhere.
+      resources:
+        - { name: "FastAPI tutorial", url: "https://fastapi.tiangolo.com/tutorial/", cost: free, kind: Docs }
+        - { name: "Docker: get started", url: "https://docs.docker.com/get-started/", cost: free, kind: Docs }
+      project: A FastAPI endpoint that returns a spam score for any message, inside a Docker container.
+    - id: mlops
+      title: MLOps
+      about: Tracking experiments, versioning data and monitoring models after launch.
+      resources:
+        - { name: "Made With ML", url: "https://madewithml.com/", cost: free, kind: Course }
+        - { name: "DataTalksClub MLOps Zoomcamp", url: "https://github.com/DataTalksClub/mlops-zoomcamp", cost: free, kind: Course }
+      project: Retrain a model automatically each week and log every run's accuracy.
+
+- id: career
+  title: Portfolio & Career
+  weeks: "Ongoing"
+  summary: Show your work. Projects, writing and community get you hired.
+  children:
+    - id: portfolio
+      title: GitHub portfolio
+      about: 3–5 strong projects with clear READMEs, results and demos beat 20 copied notebooks.
+      resources:
+        - { name: "My projects (examples)", url: "https://github.com/AbbasiSarah", cost: free, kind: Examples }
+      project: Polish your best project's README with results, a chart and how to run it.
+    - id: kaggle
+      title: Kaggle competitions
+      about: Practise on real problems and learn from top solutions.
+      resources:
+        - { name: "Kaggle competitions", url: "https://www.kaggle.com/competitions", cost: free, kind: Practice }
+      project: Join a "Getting Started" competition and publish your notebook.
+    - id: ethics
+      title: Responsible AI
+      about: Bias, fairness, privacy and honest reporting of results. Increasingly asked about in interviews.
+      resources:
+        - { name: "Kaggle Learn: Intro to AI Ethics", url: "https://www.kaggle.com/learn/intro-to-ai-ethics", cost: free, kind: Course }
+      project: Check one of your models for bias across gender or age groups.
+    - id: share
+      title: Share what you learn
+      about: Posts, reels and talks build your name. Teaching is the fastest way to learn.
+      resources:
+        - { name: "SheCodesAI on Instagram", url: "https://www.instagram.com/shecodess.ai/", cost: free, kind: Community }
+      project: Write a short post explaining one ML idea in your own words.

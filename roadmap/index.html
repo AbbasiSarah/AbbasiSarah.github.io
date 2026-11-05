@@ -1,0 +1,29 @@
+---
+layout: default
+title: Machine Learning Roadmap
+summary: A clickable machine learning roadmap from zero to job-ready, with the topics, free resources and a practice project for every step.
+---
+<section class="band first">
+  <div class="wrap">
+    <p class="kicker">Roadmap</p>
+    <h1 class="page-title">Learn Machine Learning: the SheCodesAI Roadmap</h1>
+    <p class="lead">Click a stage to open its branch, then click any topic for what it is, the best free resources and a project to practise. Tick topics as you finish them; your progress is saved in this browser.</p>
+    <div class="rm-bar">
+      <div class="rm-progress"><div class="rm-progress-fill" id="rmFill"></div></div>
+      <span id="rmCount" class="rm-count">0 of 0 topics done</span>
+      <button type="button" class="btn small" id="rmExpand">Open all stages</button>
+    </div>
+  </div>
+</section>
+<section class="rm-wrap">
+  <div class="wrap rm-layout">
+    <div class="rm-tree" id="rmTree" aria-label="Machine learning roadmap tree"></div>
+    <aside class="rm-panel" id="rmPanel" aria-live="polite">
+      <p class="kicker">How to use</p>
+      <h2 class="rm-title">Start at stage 1</h2>
+      <p class="muted">Pick any topic in the tree to see details here. Go top to bottom, but you can study math alongside Python. Topics marked <span class="rm-hot">Trending</span> are where the industry is moving fastest right now.</p>
+    </aside>
+  </div>
+</section>
+<script type="application/json" id="rmData">{{ site.data.roadmap | jsonify }}</script>
+<script src="{{ '/assets/js/roadmap.js' | relative_url }}"></script>
