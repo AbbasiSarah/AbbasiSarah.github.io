@@ -1,0 +1,21 @@
+---
+layout: default
+title: AI Trends
+summary: AI trends, tools and ideas explained in plain words by Sara Abbasi (SheCodesAI).
+---
+<section class="band first">
+  <div class="wrap">
+    <p class="kicker">Blog</p>
+    <h1 class="page-title">AI Trends</h1>
+    <p class="lead">New tools, research and ideas in AI, explained in plain words, plus notes from my own projects.</p>
+    <div class="posts">
+      {% for post in site.posts %}
+      <a class="post-row" href="{{ post.url | relative_url }}">
+        <span class="date">{{ post.date | date: "%d %b %Y" }}</span>
+        <span class="t">{{ post.title }}</span>
+        <span class="s">{{ post.summary }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

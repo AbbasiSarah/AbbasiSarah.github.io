@@ -1,0 +1,23 @@
+# Your projects. Copy a block (from "- title" down) to add another.
+- title: Detecting Depression from a Day of Movement
+  summary: A 1-D CNN built from scratch reads one day of wrist-activity data and flags depressive episodes in people it has never seen, including bipolar patients.
+  result: "71% accuracy · 0.77 AUC"
+  tags: [Deep learning, Health AI, Research]
+  demo: https://abbasisarah.github.io/depression-bipolar_CNN/
+  code: https://github.com/AbbasiSarah/depression-bipolar_CNN
+- title: Handwritten Digit CNN, No Frameworks
+  summary: A convolutional neural network written in plain NumPy. Draw a digit in the browser and watch it read your handwriting.
+  result: "98.71% test accuracy"
+  tags: [Computer vision, NumPy, Live demo]
+  demo: https://abbasisarah.github.io/handwritten-digit-cnn/
+  code: https://github.com/AbbasiSarah/handwritten-digit-cnn
+- title: SMS Spam Classifier
+  summary: Text classification with TF-IDF and linear models that catches spam messages while almost never flagging a real one.
+  result: "94.7% of spam caught · 1 false alarm in 868"
+  tags: [NLP, Text classification]
+  code: https://github.com/AbbasiSarah/sms-spam-classifier
+- title: California House Prices
+  summary: Gradient boosting predicts district house values from census data, with an honest test on map areas the model has never seen.
+  result: "R² 0.84"
+  tags: [Regression, Explainable ML]
+  code: https://github.com/AbbasiSarah/california-house-prices

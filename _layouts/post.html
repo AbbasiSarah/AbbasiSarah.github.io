@@ -1,0 +1,13 @@
+---
+layout: default
+---
+<article class="wrap post">
+  <a class="back" href="{{ '/blog/' | relative_url }}">← All posts</a>
+  <p class="kicker">{{ page.date | date: "%d %B %Y" }}{% if page.topic %} · {{ page.topic }}{% endif %}</p>
+  <h1>{{ page.title }}</h1>
+  {% if page.summary %}<p class="lead">{{ page.summary }}</p>{% endif %}
+  <div class="prose">
+    {{ content }}
+  </div>
+  <p class="signoff">Written by {{ site.author }} · <a href="{{ site.instagram }}">Follow SheCodesAI on Instagram</a></p>
+</article>

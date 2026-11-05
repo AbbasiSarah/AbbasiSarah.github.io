@@ -1,0 +1,21 @@
+# ---------------------------------------------------------------
+#  SheCodesAI site settings: edit the values on the right side.
+# ---------------------------------------------------------------
+title: SheCodesAI
+tagline: "Don't just dream, Code !t"
+author: Sara Abbasi
+description: "Sara Abbasi (SheCodesAI): machine learning projects, AI trends explained simply, and coding videos."
+url: "https://abbasisarah.github.io"
+baseurl: ""
+
+# Your links (paste the full address between the quotes)
+instagram: "https://www.instagram.com/shecodesai/"
+linkedin: "https://www.linkedin.com/in/sara-abbasi-552a1b115/"
+github: "https://github.com/AbbasiSarah"
+email: ""
+
+# Blog post addresses look like /blog/my-post-title/
+permalink: /blog/:title/
+markdown: kramdown
+timezone: Asia/Karachi
+exclude: [README.md, HOW-TO-UPDATE.md]

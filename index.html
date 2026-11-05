@@ -1,0 +1,74 @@
+---
+layout: default
+---
+<section class="hero">
+  <div class="wrap hero-in">
+    <p class="kicker">Sara Abbasi · Machine learning · AI education</p>
+    <h1 class="wordmark"><b>S</b>HECODES<b>AI</b></h1>
+    <p class="tag big">Don't just dream, <span>Code !t</span></p>
+    <p class="lead">I build machine learning projects from the ground up, explain AI trends in plain words, and share coding videos for anyone who wants to start. Research in health AI; teaching for everyone.</p>
+    <div class="cta">
+      <a class="btn primary" href="#projects">See my projects</a>
+      <a class="btn" href="{{ '/blog/' | relative_url }}">Read AI Trends</a>
+      <a class="btn" href="{{ site.instagram }}">Instagram</a>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="projects">
+  <div class="wrap">
+    <p class="kicker">Projects</p>
+    <h2>Things I built</h2>
+    <div class="grid">
+      {% for p in site.data.projects %}
+      <article class="card">
+        <div class="chips">{% for t in p.tags %}<span>{{ t }}</span>{% endfor %}</div>
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.summary }}</p>
+        {% if p.result %}<p class="result">{{ p.result }}</p>{% endif %}
+        <div class="card-links">
+          {% if p.demo %}<a class="btn primary small" href="{{ p.demo }}">Live demo</a>{% endif %}
+          {% if p.code %}<a class="btn small" href="{{ p.code }}">Code</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="band alt">
+  <div class="wrap">
+    <p class="kicker">AI Trends</p>
+    <h2>Latest posts</h2>
+    <div class="posts">
+      {% for post in site.posts limit:3 %}
+      <a class="post-row" href="{{ post.url | relative_url }}">
+        <span class="date">{{ post.date | date: "%d %b %Y" }}</span>
+        <span class="t">{{ post.title }}</span>
+        <span class="s">{{ post.summary }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    <a class="more" href="{{ '/blog/' | relative_url }}">All posts →</a>
+  </div>
+</section>
+
+<section class="band" id="videos">
+  <div class="wrap">
+    <p class="kicker">Videos</p>
+    <h2>Reels from SheCodesAI</h2>
+    {% if site.data.reels and site.data.reels.size > 0 %}
+    <div class="reels">
+      {% for r in site.data.reels limit:9 %}
+      <blockquote class="instagram-media" data-instgrm-permalink="{{ r }}" data-instgrm-version="14"><a href="{{ r }}">Watch on Instagram</a></blockquote>
+      {% endfor %}
+    </div>
+    <script async src="https://www.instagram.com/embed.js"></script>
+    {% else %}
+    <a class="reel-empty" href="{{ site.instagram }}">
+      <span class="play" aria-hidden="true">▶</span>
+      <span><b>Coding tips, AI news and project walkthroughs</b><br>Watch the latest reels on Instagram @SheCodesAI</span>
+    </a>
+    {% endif %}
+  </div>
+</section>

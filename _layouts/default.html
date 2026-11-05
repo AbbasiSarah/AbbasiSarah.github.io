@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Security: only allow content from this site, Google Fonts and Instagram embeds -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.instagram.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://www.instagram.com; connect-src 'self' https://www.instagram.com; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>{% if page.title %}{{ page.title }} · {{ site.title }}{% else %}{{ site.title }} · {{ site.author }}{% endif %}</title>
+<meta name="description" content="{% if page.summary %}{{ page.summary }}{% else %}{{ site.description }}{% endif %}">
+<meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+<meta property="og:description" content="{% if page.summary %}{{ page.summary }}{% else %}{{ site.description }}{% endif %}">
+<link rel="icon" href="{{ '/assets/img/mark.svg' | relative_url }}" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="{{ '/' | relative_url }}" aria-label="SheCodesAI home">
+      <img src="{{ '/assets/img/mark.svg' | relative_url }}" alt="" width="34" height="34">
+      <span class="word"><b>S</b>HECODES<b>AI</b></span>
+    </a>
+    <nav aria-label="Main">
+      <a href="{{ '/#projects' | relative_url }}">Projects</a>
+      <a href="{{ '/blog/' | relative_url }}">AI Trends</a>
+      <a href="{{ '/#videos' | relative_url }}">Videos</a>
+      <a href="{{ '/#contact' | relative_url }}">Contact</a>
+    </nav>
+  </div>
+</header>
+<main>
+{{ content }}
+</main>
+<footer class="foot" id="contact">
+  <div class="wrap foot-in">
+    <div>
+      <p class="tag">Don't just dream, <span>Code !t</span></p>
+      <p class="muted">{{ site.author }} · SheCodesAI</p>
+    </div>
+    <div class="links">
+      {% if site.instagram != "" %}<a href="{{ site.instagram }}">Instagram</a>{% endif %}
+      {% if site.linkedin != "" %}<a href="{{ site.linkedin }}">LinkedIn</a>{% endif %}
+      {% if site.github != "" %}<a href="{{ site.github }}">GitHub</a>{% endif %}
+      {% if site.email != "" %}<a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}
+    </div>
+  </div>
+</footer>
+</body>
+</html>
