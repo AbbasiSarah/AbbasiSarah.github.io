@@ -33,6 +33,11 @@ Open `_data/projects.yml`, click the pencil, copy one project block and change t
 Open `_data/roadmap.yml`, click the pencil, and edit the topics, resources or projects.
 Keep the same spacing (indentation) as the lines around your change: YAML is picky about spaces.
 
+## Add Code Quest challenges
+Open `assets/js/quest-data.js`. Copy one challenge block `{ type: ..., q: ..., ... },` inside a world and edit it.
+`answer` is the number of the correct option counting from 0 (options are shuffled automatically when played).
+For "bug" challenges, `answer` is the line number counting from 0.
+
 ## Change your links (Instagram, LinkedIn, email)
 Open `_config.yml`, click the pencil, and edit the addresses in quotes.
 
