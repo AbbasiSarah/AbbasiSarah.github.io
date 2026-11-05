@@ -5,7 +5,7 @@ summary: "Why I started SheCodesAI, and what you'll find here: projects, AI tren
 topic: About
 ---
 
-Hi, I'm Sara. **SheCodesAI** is where I share what I build and learn in artificial intelligence, in a way anyone can follow.
+Hi, I'm Sara, an AI and Data Science Specialist and trainer. **SheCodesAI** is where I share what I build and learn in artificial intelligence, in a way anyone can follow.
 
 ## What you'll find here
 
