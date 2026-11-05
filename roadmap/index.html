@@ -26,4 +26,4 @@ summary: A clickable machine learning roadmap from zero to job-ready, with the t
   </div>
 </section>
 <script type="application/json" id="rmData">{{ site.data.roadmap | jsonify }}</script>
-<script src="{{ '/assets/js/roadmap.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/roadmap.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
