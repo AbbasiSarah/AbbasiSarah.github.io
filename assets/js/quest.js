@@ -5,6 +5,7 @@
   var S = { xp: 0, worlds: {} };
   try { S = JSON.parse(localStorage.getItem(KEY)) || S; } catch (e) {}
   var run = null;
+  var SND = window.QuestSound || { play: function () {}, isOn: function () { return false; }, toggle: function () { return false; } };
   var $ = function (id) { return document.getElementById(id); };
 
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -95,10 +96,10 @@
     var c = W[run.w].challenges[run.q], fb = $('qFb'), pts = 0;
     if (right) {
       run.streak++; pts = 100 + Math.min(run.streak - 1, 5) * 20; run.gained += pts;
-      el.classList.add('right');
+      el.classList.add('right'); SND.play('correct', run.streak);
     } else {
       run.streak = 0; run.hearts--; run.mistakes++;
-      el.classList.add('wrong');
+      el.classList.add('wrong'); SND.play('wrong');
       var correct = c.type === 'bug' ? document.querySelector('.q-line[data-line="' + c.answer + '"]')
         : document.querySelector('.q-opt[data-opt="' + run.opts.findIndex(function (o) { return o.right; }) + '"]');
       if (correct) correct.classList.add('right');
@@ -116,10 +117,11 @@
 
   function finish() {
     var w = W[run.w], passed = run.hearts > 0, stars = passed ? Math.max(1, 3 - run.mistakes) : 0;
-    var st = S.worlds[w.id] || {};
+    var st = S.worlds[w.id] || {}, wasAll = allDone();
     var newXp = passed ? Math.max(0, run.gained - (st.best || 0)) : 0;   // replays only add improvements
     if (passed) { S.xp += newXp; S.worlds[w.id] = { done: true, stars: Math.max(stars, st.stars || 0), best: Math.max(run.gained, st.best || 0) }; save(); }
     stats();
+    SND.play(!passed ? 'lose' : (!wasAll && allDone()) ? 'certificate' : 'badge');
     var share = 'I earned the "' + w.badge + '" badge on SheCodesAI Code Quest with ' + S.xp + ' XP! Can you beat me? https://abbasisarah.github.io/play/';
     $('qDots').innerHTML = ''; $('qHearts').innerHTML = ''; $('qStreak').textContent = '';
     $('qCard').innerHTML = passed
@@ -147,6 +149,7 @@
       '<div class="q-fb-actions"><button type="button" class="btn small" id="qMapBtn">Back to map</button></div></div>';
     $('qMapBtn').addEventListener('click', map);
     sharePanel($('qShareBox'), { kind: 'cert' });
+    SND.play('certificate');
     $('qPlay').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -219,6 +222,9 @@
     var btn = document.querySelector('.q-opt[data-opt="' + k + '"]');
     if (k >= 0 && btn) btn.click();
   });
+  var sb = $('qSound');
+  function soundLabel() { sb.textContent = SND.isOn() ? '🔊 Sound on' : '🔇 Sound off'; sb.setAttribute('aria-pressed', SND.isOn() ? 'true' : 'false'); }
+  if (sb) { soundLabel(); sb.addEventListener('click', function () { SND.toggle(); soundLabel(); }); }
   $('qBack').addEventListener('click', map);
   $('qReset').addEventListener('click', function () {
     var b = this;
