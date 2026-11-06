@@ -27,6 +27,14 @@ layout: default
         <h3>{{ p.title }}</h3>
         <p>{{ p.summary }}</p>
         {% if p.result %}<p class="result">{{ p.result }}</p>{% endif %}
+        {% if p.video %}
+        <details class="demo">
+          <summary>▶ Watch the 17-second demo</summary>
+          <video controls playsinline preload="none" poster="{{ '/assets/videos/' | append: p.video | append: '.jpg' | relative_url }}">
+            <source src="{{ '/assets/videos/' | append: p.video | append: '.mp4' | relative_url }}" type="video/mp4">
+          </video>
+        </details>
+        {% endif %}
         <div class="card-links">
           {% if p.demo %}<a class="btn primary small" href="{{ p.demo }}">Live demo</a>{% endif %}
           {% if p.code %}<a class="btn small" href="{{ p.code }}">Code</a>{% endif %}

@@ -82,6 +82,11 @@ h3 { font: 600 1.15rem var(--body); }
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chips span { font: 500 0.7rem var(--wide); letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); border: 1px solid rgba(47, 224, 191, 0.35); padding: 3px 8px; border-radius: 99px; }
 .card-links { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.demo summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px; font: 600 0.88rem var(--body); color: var(--teal); padding: 6px 12px; border: 1px solid rgba(47, 224, 191, 0.45); border-radius: 99px; width: fit-content; }
+.demo summary::-webkit-details-marker { display: none; }
+.demo summary:hover { background: rgba(47, 224, 191, 0.1); }
+.demo[open] summary { margin-bottom: 10px; }
+.demo video { display: block; width: 100%; max-width: 300px; aspect-ratio: 9 / 16; margin-inline: auto; border-radius: 14px; border: 1px solid var(--line); background: #000; }
 
 /* posts */
 .posts { display: grid; gap: 10px; }
