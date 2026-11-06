@@ -257,3 +257,11 @@ h3 { font: 600 1.15rem var(--body); }
 .q-cert { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 18px; padding: 16px 20px; border-radius: 16px; border: 1px solid var(--gold); background: linear-gradient(90deg, rgba(245, 183, 10, 0.14), rgba(47, 224, 191, 0.08)); }
 .q-cert-text { display: flex; gap: 14px; align-items: center; }
 .q-cert-icon { font-size: 2rem; }
+
+/* self-hosted videos */
+.vids { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; margin-bottom: 18px; }
+.vid { margin: 0; display: grid; gap: 8px; }
+.vid video { width: 100%; aspect-ratio: 9 / 16; border-radius: 16px; border: 1px solid var(--line); background: #000; }
+.vid figcaption { color: var(--ink); font-weight: 600; font-size: 0.95rem; }
+.more-vids { margin: 4px 0 22px; }
+.post-video { width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; border: 1px solid var(--line); background: #000; margin: 8px 0 24px; }
