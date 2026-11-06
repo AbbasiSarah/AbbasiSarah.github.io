@@ -5,6 +5,8 @@ summary: "The largest crypto theft on record began months earlier, when an engin
 topic: Cybersecurity
 ---
 
+<video class="post-video" controls playsinline preload="none" poster="{{ '/assets/videos/binance-hack-explained.jpg' | relative_url }}"><source src="{{ '/assets/videos/binance-hack-explained.mp4' | relative_url }}" type="video/mp4"></video>
+
 On 29 October 2026, hackers drained about **$6.3 billion** from **Binance**, the world's largest crypto exchange. It is the biggest crypto theft ever recorded, larger than the $1.5 billion Bybit hack of 2025.
 
 ## What happened

@@ -84,6 +84,19 @@ layout: default
   <div class="wrap">
     <p class="kicker">Videos</p>
     <h2>Reels from SheCodesAI</h2>
+    {% if site.data.videos and site.data.videos.size > 0 %}
+    <div class="vids">
+      {% for v in site.data.videos %}
+      <figure class="vid">
+        <video controls playsinline preload="none" poster="{{ '/assets/videos/' | append: v.file | append: '.jpg' | relative_url }}">
+          <source src="{{ '/assets/videos/' | append: v.file | append: '.mp4' | relative_url }}" type="video/mp4">
+        </video>
+        <figcaption>{{ v.title }}</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+    <p class="more-vids"><a href="{{ site.instagram }}">More on Instagram @shecodess.ai →</a></p>
+    {% endif %}
     {% if site.data.reels and site.data.reels.size > 0 %}
     <div class="reels">
       {% for r in site.data.reels limit:9 %}
