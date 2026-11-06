@@ -21,7 +21,23 @@ window.QUEST = [
       { type: "bug", q: "This crashes when called with an empty list. Click the line that fails.",
         code: "def average(nums):\n    total = 0\n    for n in nums:\n        total += n\n    return total / len(nums)\n\nprint(average([]))",
         answer: 4,
-        why: "len([]) is 0, so total / 0 raises ZeroDivisionError. Check for an empty list first.", note: "python-basics" }
+        why: "len([]) is 0, so total / 0 raises ZeroDivisionError. Check for an empty list first.", note: "python-basics" },
+      { type: "output", q: "What does this print?",
+        code: "print('ai' * 3)",
+        options: ["aiaiai", "ai3", "ai ai ai", "TypeError"], answer: 0,
+        why: "Multiplying a string by a number repeats it: 'ai' three times is 'aiaiai'.", note: "python-basics" },
+      { type: "output", q: "What does this print?",
+        code: "x = [1, 2, 3]\ny = x\ny.append(4)\nprint(len(x))",
+        options: ["4", "3", "1", "Error"], answer: 0,
+        why: "y = x does not copy the list. Both names point to the same list, so appending through y changes x too. Use x.copy() for a real copy.", note: "python-basics" },
+      { type: "blank", q: "Print each name with its position (0, 1, ...).",
+        code: "for i, name in ____(['Ana', 'Ben']):\n    print(i, name)",
+        options: ["enumerate", "range", "zip", "len"], answer: 0,
+        why: "enumerate gives you the index and the item together: (0, 'Ana'), (1, 'Ben').", note: "python-basics" },
+      { type: "bug", q: "This crashes with IndexError. Click the line with the bug.",
+        code: "names = ['Ana', 'Ben', 'Cy']\nfor i in range(len(names) + 1):\n    print(names[i])",
+        answer: 1,
+        why: "range(len(names) + 1) goes up to index 3, but the last index is 2. Use range(len(names)), or simply: for name in names.", note: "python-basics" }
     ]
   },
   {
@@ -43,7 +59,22 @@ window.QUEST = [
       { type: "output", q: "What does this print?",
         code: "import pandas as pd\ns = pd.Series([1, None, 3])\nprint(s.mean())",
         options: ["2.0", "nan", "1.33", "TypeError"], answer: 0,
-        why: "Pandas skips missing values (NaN) by default: (1 + 3) / 2 = 2.0.", note: "cleaning" }
+        why: "Pandas skips missing values (NaN) by default: (1 + 3) / 2 = 2.0.", note: "cleaning" },
+      { type: "output", q: "What does this print?",
+        code: "import numpy as np\na = np.array([[1, 2], [3, 4]])\nprint(a.sum(axis=0))",
+        options: ["[4 6]", "[3 7]", "10", "[1 2 3 4]"], answer: 0,
+        why: "axis=0 adds down the columns: 1 + 3 = 4 and 2 + 4 = 6. axis=1 would add across rows: [3 7].", note: "numpy" },
+      { type: "blank", q: "Remove every row that has a missing value.",
+        code: "df = df.____()",
+        options: ["dropna", "fillna", "isna", "drop_duplicates"], answer: 0,
+        why: "dropna() drops rows with missing values. fillna() fills them in instead, which is often better when data is scarce.", note: "cleaning" },
+      { type: "output", q: "How many rows are left?",
+        code: "import pandas as pd\ndf = pd.DataFrame({'x': [1, 2, 3, 4]})\nprint(len(df[df['x'] > 2]))",
+        options: ["2", "3", "4", "1"], answer: 0,
+        why: "The filter keeps only rows where x is greater than 2: the rows with 3 and 4.", note: "pandas" },
+      { type: "concept", q: "A table has 100 rows and 5 columns. What does df.shape return?",
+        options: ["(100, 5)", "(5, 100)", "500", "100"], answer: 0,
+        why: "shape is always (rows, columns).", note: "pandas" }
     ]
   },
   {
@@ -63,7 +94,21 @@ window.QUEST = [
         why: "The scaler learns the mean and std from ALL rows, test rows included. Split first, then fit the scaler on the training rows only (or use a Pipeline).", note: "evaluation" },
       { type: "concept", q: "Which model usually wins on spreadsheet-style (tabular) data?",
         options: ["Gradient boosting", "A single decision tree", "K-means", "A CNN"], answer: 0,
-        why: "Gradient-boosted trees (XGBoost, LightGBM, HistGradientBoosting) are the go-to for tables.", note: "trees" }
+        why: "Gradient-boosted trees (XGBoost, LightGBM, HistGradientBoosting) are the go-to for tables.", note: "trees" },
+      { type: "concept", q: "You want to predict the price of a house (a number). What kind of problem is this?",
+        options: ["Regression", "Classification", "Clustering", "Reinforcement learning"], answer: 0,
+        why: "Predicting a number is regression. Predicting a category, such as spam or not spam, is classification.", note: "supervised" },
+      { type: "blank", q: "Train the model on the training data.",
+        code: "model = RandomForestClassifier()\nmodel.____(X_train, y_train)",
+        options: ["fit", "predict", "score", "transform"], answer: 0,
+        why: "fit() learns from the data. After that, predict() makes predictions and score() measures them.", note: "supervised" },
+      { type: "concept", q: "Missing a cancer case is much worse than a false alarm. Which metric matters most?",
+        options: ["Recall", "Precision", "Accuracy", "R²"], answer: 0,
+        why: "Recall measures how many real cases the model catches. When a miss is dangerous, you want high recall.", note: "evaluation" },
+      { type: "output", q: "What does this print?",
+        code: "from sklearn.metrics import accuracy_score\nprint(accuracy_score([1, 0, 1, 1], [1, 0, 0, 1]))",
+        options: ["0.75", "0.5", "1.0", "0.25"], answer: 0,
+        why: "3 of the 4 predictions match the true labels, so accuracy is 3 / 4 = 0.75.", note: "evaluation" }
     ]
   },
   {
@@ -83,7 +128,21 @@ window.QUEST = [
         why: "The model is memorising the training data. Try more data, dropout, weight decay or early stopping.", note: "neural-nets" },
       { type: "concept", q: "A 28×28 image goes through Conv2d(1, 8, 3, padding=1) then MaxPool2d(2). Output shape?",
         options: ["8 × 14 × 14", "8 × 28 × 28", "1 × 14 × 14", "8 × 26 × 26"], answer: 0,
-        why: "padding=1 keeps 28×28 with 8 filters; pooling by 2 halves it to 14×14.", note: "cnn" }
+        why: "padding=1 keeps 28×28 with 8 filters; pooling by 2 halves it to 14×14.", note: "cnn" },
+      { type: "concept", q: "What is one epoch?",
+        options: ["One full pass over all the training data", "One weight update", "One layer of the network", "One batch of images"], answer: 0,
+        why: "An epoch means the model has seen every training example once. Each epoch is split into many batches, and each batch makes one weight update.", note: "neural-nets" },
+      { type: "output", q: "The sigmoid function squashes numbers between 0 and 1. What does this print?",
+        code: "import numpy as np\nprint(1 / (1 + np.exp(0)))",
+        options: ["0.5", "1.0", "0.0", "2.718"], answer: 0,
+        why: "exp(0) is 1, so the result is 1 / (1 + 1) = 0.5. A sigmoid of 0 sits exactly in the middle.", note: "neural-nets" },
+      { type: "bug", q: "This model trains badly because dropout is switched off. Click the wrong line.",
+        code: "model.eval()\nfor xb, yb in train_loader:\n    optimizer.zero_grad()\n    loss = loss_fn(model(xb), yb)\n    loss.backward()\n    optimizer.step()",
+        answer: 0,
+        why: "model.eval() turns off dropout and freezes batch-norm statistics. Call model.train() before training and model.eval() only for testing.", note: "pytorch" },
+      { type: "concept", q: "Your loss jumps around wildly and then becomes NaN. What should you try first?",
+        options: ["Lower the learning rate", "Add more layers", "Train for more epochs", "Remove the validation set"], answer: 0,
+        why: "A learning rate that is too high makes the weights overshoot and blow up. Try dividing it by 10.", note: "neural-nets" }
     ]
   },
   {
@@ -102,7 +161,19 @@ window.QUEST = [
         why: "Equal scores get equal attention: softmax turns them into weights that sum to 1.", note: "transformers" },
       { type: "concept", q: "An AI agent can send emails. What is the most important safety step?",
         options: ["Ask a human to approve before sending", "Use a faster model", "Give it more tools", "Remove the step limit"], answer: 0,
-        why: "Agents that take real actions need guardrails: approval for risky steps and a step limit.", note: "agents" }
+        why: "Agents that take real actions need guardrails: approval for risky steps and a step limit.", note: "agents" },
+      { type: "concept", q: "What is a token in a large language model?",
+        options: ["A small piece of text, like a word or part of a word", "One full sentence", "A password for the API", "One GPU"], answer: 0,
+        why: "LLMs read and write text as tokens. A long or rare word can be split into several tokens, and pricing and context limits are counted in tokens.", note: "transformers" },
+      { type: "concept", q: "What does a lower temperature setting do to an LLM's answers?",
+        options: ["Makes them more predictable and focused", "Makes the model faster", "Makes them more creative", "Adds up-to-date facts"], answer: 0,
+        why: "Temperature controls randomness. Low values pick the most likely words; high values give more varied, creative text.", note: "llms" },
+      { type: "concept", q: "In a RAG system, what are embeddings used for?",
+        options: ["Finding documents with a similar meaning to the question", "Compressing the model", "Encrypting the documents", "Generating images"], answer: 0,
+        why: "Embeddings turn text into vectors of numbers. Texts with similar meanings get similar vectors, so you can search by meaning, not just keywords.", note: "rag" },
+      { type: "concept", q: "An LLM confidently cites a research paper that does not exist. What is this called?",
+        options: ["Hallucination", "Overfitting", "Data leakage", "Prompt injection"], answer: 0,
+        why: "LLMs predict likely text, not true facts, so they can invent sources. Always check citations, or ground the model with RAG.", note: "llms" }
     ]
   }
 ];

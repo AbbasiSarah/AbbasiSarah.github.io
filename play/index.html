@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Code Quest
-summary: A free coding game. Fix bugs, predict outputs and complete code across 5 worlds, from Python to AI agents. Earn XP and badges.
+summary: A free coding game. Fix bugs, predict outputs and complete code across 5 worlds, from Python to AI agents. Earn XP, shareable badges and a certificate.
 ---
 <section class="band first quest">
   <div class="wrap">
@@ -9,7 +9,7 @@ summary: A free coding game. Fix bugs, predict outputs and complete code across 
       <div>
         <p class="kicker">Game</p>
         <h1 class="page-title">Code Quest</h1>
-        <p class="lead">Fix bugs, predict what code prints and fill in the missing piece. Travel through 5 worlds, from Python to AI agents, earn XP, keep your streak and collect badges.</p>
+        <p class="lead">Fix bugs, predict what code prints and fill in the missing piece. Travel through 5 worlds, from Python to AI agents, earn XP, keep your streak, collect badges you can share on Instagram and LinkedIn, and finish all 5 worlds to earn your certificate.</p>
       </div>
       <div class="q-stats" aria-live="polite">
         <div class="q-stat"><span class="q-k">XP</span><b id="qXp">0</b></div>
@@ -18,6 +18,7 @@ summary: A free coding game. Fix bugs, predict outputs and complete code across 
       </div>
     </div>
 
+    <div id="qCert" class="q-cert" hidden></div>
     <div id="qMap" class="q-map" aria-label="Worlds"></div>
 
     <div id="qPlay" class="q-play" hidden>
@@ -35,4 +36,5 @@ summary: A free coding game. Fix bugs, predict outputs and complete code across 
   </div>
 </section>
 <script src="{{ '/assets/js/quest-data.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+<script src="{{ '/assets/js/quest-share.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 <script src="{{ '/assets/js/quest.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

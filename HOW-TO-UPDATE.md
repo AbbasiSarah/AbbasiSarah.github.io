@@ -38,6 +38,8 @@ Open `assets/js/quest-data.js`. Copy one challenge block `{ type: ..., q: ..., .
 `answer` is the number of the correct option counting from 0 (options are shuffled automatically when played).
 For "bug" challenges, `answer` is the line number counting from 0.
 
+Badges and the certificate are drawn in `assets/js/quest-share.js`. The world names, badge names and icons come from `quest-data.js`, so changing them there updates the images too.
+
 ## Change your links (Instagram, LinkedIn, email)
 Open `_config.yml`, click the pencil, and edit the addresses in quotes.
 

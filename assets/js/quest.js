@@ -32,6 +32,16 @@
 
   function map() {
     $('qPlay').hidden = true; $('qMap').hidden = false; stats();
+    var all = W.every(function (w) { return S.worlds[w.id] && S.worlds[w.id].done; });
+    var cb = $('qCert');
+    if (cb) {
+      cb.hidden = !all;
+      if (all) {
+        cb.innerHTML = '<div class="q-cert-text"><span class="q-cert-icon" aria-hidden="true">🎓</span><div><b>You finished all 5 worlds!</b><br>Claim your SheCodesAI certificate and add it to LinkedIn.</div></div>' +
+          '<button type="button" class="btn primary small" id="qCertBtn">Get my certificate</button>';
+        $('qCertBtn').addEventListener('click', function () { openCert(); });
+      }
+    }
     $('qMap').innerHTML = W.map(function (w, i) {
       var st = S.worlds[w.id] || {}, prev = i === 0 || (S.worlds[W[i - 1].id] || {}).done, locked = !prev;
       var stars = st.stars ? '★★★'.slice(0, st.stars) + '☆☆☆'.slice(st.stars) : '';
@@ -116,19 +126,81 @@
       ? '<div class="q-end"><div class="q-badge" aria-hidden="true">' + w.icon + '</div><p class="q-type">Badge unlocked</p><h2 class="q-q">' + esc(w.badge) + '</h2>' +
         '<p class="q-stars big">' + '★★★'.slice(0, stars) + '☆☆☆'.slice(stars) + '</p>' +
         '<p>' + run.gained + ' XP this run' + (newXp < run.gained ? ' (+' + newXp + ' new)' : '') + ' · Rank: <b>' + esc(rank(S.xp)) + '</b></p>' +
-        '<div class="q-fb-actions"><button type="button" class="btn primary small" id="qMapBtn">Back to map</button> <button type="button" class="btn small" id="qShare">Copy brag text</button></div>' +
-        '<p class="q-share" id="qShareMsg" hidden></p></div>'
+        (allDone() ? '<p class="q-cert-note">🎓 That was the last world. Your certificate is ready!</p>' : '') +
+        '<div id="qShareBox" class="q-sharebox"></div>' +
+        '<div class="q-fb-actions"><button type="button" class="btn small" id="qMapBtn">Back to map</button></div></div>'
       : '<div class="q-end"><div class="q-badge" aria-hidden="true">💔</div><h2 class="q-q">Out of hearts</h2><p>Every mistake is a lesson. Open the explanations again, then retry.</p>' +
         '<div class="q-fb-actions"><button type="button" class="btn primary small" id="qRetry">Try again</button> <button type="button" class="btn small" id="qMapBtn">Map</button></div></div>';
     var mb = $('qMapBtn'); if (mb) mb.addEventListener('click', map);
     var rt = $('qRetry'); if (rt) rt.addEventListener('click', function () { start(run.w); });
-    var sh = $('qShare');
-    if (sh) sh.addEventListener('click', function () {
-      var msg = $('qShareMsg'); msg.hidden = false;
-      try {
-        navigator.clipboard.writeText(share).then(function () { msg.textContent = 'Copied! Paste it in your story or post.'; },
-          function () { msg.textContent = share; });
-      } catch (e) { msg.textContent = share; }
+    if (passed) sharePanel($('qShareBox'), { kind: 'badge', w: w, worldNo: run.w + 1, stars: Math.max(stars, (S.worlds[w.id] || {}).stars || 0) });
+  }
+
+  function allDone() { return W.every(function (w) { return S.worlds[w.id] && S.worlds[w.id].done; }); }
+
+  function openCert() {
+    $('qMap').hidden = true; $('qPlay').hidden = false; var cb = $('qCert'); if (cb) cb.hidden = true;
+    $('qWorldName').textContent = '🎓 Certificate'; $('qDots').innerHTML = ''; $('qHearts').innerHTML = ''; $('qStreak').textContent = '';
+    $('qCard').innerHTML = '<div class="q-end"><p class="q-type">Code Quest complete</p><h2 class="q-q">Your certificate</h2>' +
+      '<p>All 5 worlds and 40 challenges done. Add your name, download the certificate and share it.</p>' +
+      '<div id="qShareBox" class="q-sharebox"></div>' +
+      '<div class="q-fb-actions"><button type="button" class="btn small" id="qMapBtn">Back to map</button></div></div>';
+    $('qMapBtn').addEventListener('click', map);
+    sharePanel($('qShareBox'), { kind: 'cert' });
+    $('qPlay').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Name box -> image preview -> download / share / LinkedIn
+  function sharePanel(box, o) {
+    var QS = window.QuestShare; if (!QS || !box) return;
+    var isCert = o.kind === 'cert';
+    box.innerHTML = '<label class="q-name-label" for="qName">Your name for the ' + (isCert ? 'certificate' : 'badge') + '</label>' +
+      '<div class="q-name-row"><input id="qName" class="q-name" type="text" maxlength="40" autocomplete="name" placeholder="e.g. Ayesha Khan" value="' + esc(S.name || '') + '">' +
+      '<button type="button" class="btn primary small" id="qMake">' + (isCert ? 'Create certificate' : 'Create my badge') + '</button></div>' +
+      '<p class="q-share" id="qShareMsg" hidden></p><div id="qPreview" class="q-preview" hidden></div>' +
+      (allDone() && !isCert ? '<button type="button" class="btn small" id="qToCert">🎓 Get my certificate</button>' : '');
+    var tc = $('qToCert'); if (tc) tc.addEventListener('click', openCert);
+    var msg = $('qShareMsg');
+    function say(t) { msg.hidden = false; msg.textContent = t; }
+    $('qName').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('qMake').click(); });
+    $('qMake').addEventListener('click', function () {
+      var name = $('qName').value.trim().replace(/\s+/g, ' ');
+      if (name.length < 2) { say('Please type your name first.'); $('qName').focus(); return; }
+      S.name = name;
+      if (isCert && !S.certId) S.certId = QS.certId(name, S.xp);
+      save();
+      var job = isCert
+        ? QS.certificate({ name: name, xp: S.xp, rank: rank(S.xp), id: S.certId, worlds: W.map(function (w) { return { icon: w.icon, badge: w.badge }; }) })
+        : QS.badge({ name: name, badge: o.w.badge, icon: o.w.icon, worldNo: o.worldNo, worldTitle: o.w.title, stars: o.stars, xp: S.xp, rank: rank(S.xp) });
+      say('Creating your image…');
+      job.then(function (c) {
+        msg.hidden = true;
+        var file = isCert ? 'SheCodesAI-Code-Quest-Certificate.png' : 'SheCodesAI-' + o.w.badge.replace(/\W+/g, '-') + '-badge.png';
+        var text = isCert
+          ? 'I just completed SheCodesAI Code Quest: 40 hands-on challenges from Python to AI agents, with ' + S.xp + ' XP and the rank of ' + rank(S.xp) + '. 🎓 Try it free: https://abbasisarah.github.io/play/ #SheCodesAI #MachineLearning #WomenInTech'
+          : 'I earned the "' + o.w.badge + '" badge on SheCodesAI Code Quest with ' + S.xp + ' XP! Can you beat me? https://abbasisarah.github.io/play/ #SheCodesAI #CodeQuest';
+        var pv = $('qPreview'); pv.hidden = false;
+        pv.innerHTML = '<img alt="' + esc(isCert ? 'Your Code Quest certificate' : 'Your ' + o.w.badge + ' badge') + '" src="' + c.toDataURL('image/png') + '">' +
+          '<div class="q-fb-actions q-share-actions">' +
+          '<button type="button" class="btn primary small" id="qDl">⬇ Download image</button>' +
+          '<button type="button" class="btn small" id="qNative">📱 Share to Instagram / apps</button>' +
+          '<button type="button" class="btn small" id="qLi">Post on LinkedIn</button>' +
+          (isCert ? '<a class="btn small" id="qLiAdd" target="_blank" rel="noopener" href="' + QS.linkedInProfile(S.certId) + '">＋ Add to LinkedIn profile</a>' : '') +
+          '<button type="button" class="btn small" id="qCopy">Copy caption</button></div>' +
+          '<p class="q-share q-tip">' + (isCert ? 'Certificate ID: <b>' + esc(S.certId) + '</b>. ' : '') +
+          'Instagram: download the image, then add it to your story or a post and paste the caption. LinkedIn: click "Post on LinkedIn", paste the caption and attach the image.</p>';
+        function copy(after) {
+          try { navigator.clipboard.writeText(text).then(function () { say('Caption copied. Paste it with your image.'); if (after) after(); }, function () { say(text); if (after) after(); }); }
+          catch (e) { say(text); if (after) after(); }
+        }
+        $('qDl').addEventListener('click', function () { QS.download(c, file); });
+        $('qCopy').addEventListener('click', function () { copy(); });
+        $('qNative').addEventListener('click', function () {
+          QS.share(c, file, text).then(function (ok) { if (!ok) { QS.download(c, file); copy(); say('Image downloaded and caption copied. Open Instagram and add the image to your story or a post.'); } });
+        });
+        $('qLi').addEventListener('click', function () { var win = window.open(QS.linkedInPost(), '_blank', 'noopener'); copy(); if (!win) location.href = QS.linkedInPost(); });
+        pv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, function () { say('Sorry, the image could not be created in this browser.'); });
     });
   }
 
@@ -150,7 +222,7 @@
   $('qBack').addEventListener('click', map);
   $('qReset').addEventListener('click', function () {
     var b = this;
-    if (b.dataset.confirm) { S = { xp: 0, worlds: {} }; save(); map(); b.textContent = 'Reset progress'; delete b.dataset.confirm; }
+    if (b.dataset.confirm) { S = { xp: 0, worlds: {}, name: S.name }; save(); map(); b.textContent = 'Reset progress'; delete b.dataset.confirm; }
     else { b.dataset.confirm = '1'; b.textContent = 'Click again to confirm reset'; }
   });
   map();
