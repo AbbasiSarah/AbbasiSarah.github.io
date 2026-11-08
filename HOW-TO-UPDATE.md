@@ -40,6 +40,10 @@ For "bug" challenges, `answer` is the line number counting from 0.
 
 Badges and the certificate are drawn in `assets/js/quest-share.js`. The world names, badge names and icons come from `quest-data.js`, so changing them there updates the images too.
 
+## Add your Fiverr or Upwork link
+Open `_config.yml`, click the pencil, and paste your profile link between the quotes after `fiverr:` or `upwork:`.
+A "Hire me on Fiverr/Upwork" button then appears on the Hire me page.
+
 ## Change your links (Instagram, LinkedIn, email)
 Open `_config.yml`, click the pencil, and edit the addresses in quotes.
 

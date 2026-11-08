@@ -17,6 +17,10 @@ scholar: "https://scholar.google.com/citations?user=wgCZlMkAAAAJ"
 researchgate: "" # paste your ResearchGate profile link here
 email: ""
 
+# Freelance profiles: paste your links between the quotes when they are ready
+fiverr: ""
+upwork: ""
+
 # Blog post addresses look like /blog/my-post-title/
 permalink: /blog/:title/
 markdown: kramdown

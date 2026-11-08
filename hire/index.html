@@ -1,0 +1,104 @@
+---
+layout: default
+title: Hire me
+summary: "Machine learning, data analysis, automation and AI chatbots for small businesses, researchers and students. Clean code, clear reports, and a walkthrough with every project."
+---
+<section class="hero">
+  <div class="wrap hero-in">
+    <p class="kicker">Work with me</p>
+    <h1>I turn messy data and boring tasks into <span style="color:var(--gold)">clear answers and automations</span>.</h1>
+    <p class="lead">I'm Sara Abbasi, an AI and Data Science specialist and trainer with published research. I help small businesses, researchers and students with machine learning, data analysis and automation. Every project comes with clean code, a short report in plain words, and a walkthrough so you understand what you got.</p>
+    <div class="cta">
+      <a class="btn primary" href="#start">Start a project</a>
+      <a class="btn" href="#portfolio">See my work</a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="kicker">Services</p>
+    <h2>What I can do for you</h2>
+    <div class="grid">
+      <article class="card">
+        <div class="chips"><span>Automation</span></div>
+        <h3>Excel &amp; report automation</h3>
+        <p>Merge and clean spreadsheets from different people, build monthly reports with charts automatically, and stop copy-pasting.</p>
+      </article>
+      <article class="card">
+        <div class="chips"><span>AI</span><span>NLP</span></div>
+        <h3>AI chatbots &amp; workflows</h3>
+        <p>FAQ chatbots for your website or WhatsApp, and automations that connect forms, sheets and email so routine work runs by itself.</p>
+      </article>
+      <article class="card">
+        <div class="chips"><span>Machine learning</span></div>
+        <h3>Machine learning models</h3>
+        <p>Prediction, classification and clustering in Python, honestly tested on data the model has never seen, and explained in plain words.</p>
+      </article>
+      <article class="card">
+        <div class="chips"><span>Forecasting</span></div>
+        <h3>Data analysis &amp; forecasting</h3>
+        <p>Find what your data is really saying: clear charts, sales and demand forecasts, and dashboards you can act on.</p>
+      </article>
+      <article class="card">
+        <div class="chips"><span>Teaching</span></div>
+        <h3>Python &amp; ML tutoring</h3>
+        <p>One-to-one or small-group lessons with Google Colab notebooks and exercises, from your first line of Python to deep learning.</p>
+      </article>
+      <article class="card">
+        <div class="chips"><span>Research</span></div>
+        <h3>Research data support</h3>
+        <p>Analysis for theses and papers: data cleaning, statistics, ML experiments and clear figures, with code you can reproduce.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="portfolio">
+  <div class="wrap">
+    <p class="kicker">Portfolio</p>
+    <h2>Recent work you can try</h2>
+    <div class="grid">
+      {% for p in site.data.projects limit:4 %}
+      <article class="card">
+        <div class="chips">{% for t in p.tags %}<span>{{ t }}</span>{% endfor %}</div>
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.summary }}</p>
+        {% if p.result %}<p class="result">{{ p.result }}</p>{% endif %}
+        <div class="card-links">
+          {% if p.demo %}<a class="btn primary small" href="{{ p.demo }}">Live demo</a>{% endif %}
+          {% if p.code %}<a class="btn small" href="{{ p.code }}">Code</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <p style="margin-top:18px"><a class="btn" href="{{ '/#projects' | relative_url }}">All projects</a> <a class="btn" href="https://github.com/AbbasiSarah/ml-roadmap/tree/main/colab">ML exercises I teach</a></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="kicker">How it works</p>
+    <h2>Simple and clear</h2>
+    <div class="posts">
+      <div class="post-row"><span class="date">Step 1</span><span class="t">Tell me what you need</span><span class="s">Send a message with your task, and a sample of your data if you have one.</span></div>
+      <div class="post-row"><span class="date">Step 2</span><span class="t">Get a plan and a fixed quote</span><span class="s">I reply with what I'll deliver, the price and the deadline. No surprises.</span></div>
+      <div class="post-row"><span class="date">Step 3</span><span class="t">Receive your work</span><span class="s">Clean code, results, a short report and a walkthrough. Small changes are included.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="start">
+  <div class="wrap">
+    <p class="kicker">Start a project</p>
+    <h2>Let's talk</h2>
+    <p class="lead">Message me with a short description of your project. I usually reply within a day.</p>
+    <div class="cta">
+      {% if site.fiverr != "" %}<a class="btn primary" href="{{ site.fiverr }}">Hire me on Fiverr</a>{% endif %}
+      {% if site.upwork != "" %}<a class="btn primary" href="{{ site.upwork }}">Hire me on Upwork</a>{% endif %}
+      <a class="btn" href="{{ site.linkedin }}">Message on LinkedIn</a>
+      <a class="btn" href="{{ site.instagram }}">DM on Instagram</a>
+      {% if site.email != "" %}<a class="btn" href="mailto:{{ site.email }}">Email</a>{% endif %}
+    </div>
+  </div>
+</section>

@@ -1,5 +1,16 @@
 # Your projects. Copy a block (from "- title" down) to add another.
 # video: a short demo video in assets/videos/ (the poster image has the same name, ending .jpg)
+- title: AI FAQ Chatbot for Businesses
+  summary: Answers customer questions from a business's own FAQ, in English or Roman Urdu, even with typos. When it isn't sure, it hands the question to a human instead of guessing.
+  result: "Runs in the browser · no API costs"
+  tags: [NLP, Automation, Live demo]
+  demo: https://abbasisarah.github.io/demos/faq-chatbot/
+  code: https://github.com/AbbasiSarah/ai-faq-chatbot
+- title: Excel Report Automator
+  summary: Turns a folder of messy branch spreadsheets into one clean Excel report, with KPIs, charts and a log of every fix. Hours of monthly copy-paste become one command.
+  result: "9 files → 1 report · 79 fixes logged"
+  tags: [Automation, Python, Excel]
+  code: https://github.com/AbbasiSarah/excel-report-automator
 - title: "WearCNN-Guard: Depression Screening with a Guarantee"
   summary: A 1-D CNN built from scratch reads one week of wrist activity from 8,723 US adults and screens for depression. Conformal prediction gives every answer a proven 90% guarantee, also for depressed people.
   result: "90% guaranteed coverage · 8,723 people"
