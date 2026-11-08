@@ -11,6 +11,7 @@ layout: default
       <a class="btn primary" href="#projects">See my projects</a>
       <a class="btn" href="{{ '/roadmap/' | relative_url }}">ML Roadmap</a>
       <a class="btn" href="{{ '/blog/' | relative_url }}">Read AI Trends</a>
+      <a class="btn" href="#publications">Publications</a>
       <a class="btn" href="{{ site.instagram }}">Instagram</a>
     </div>
   </div>
@@ -42,6 +43,26 @@ layout: default
       </article>
       {% endfor %}
     </div>
+  </div>
+</section>
+
+<section class="band alt" id="publications">
+  <div class="wrap">
+    <p class="kicker">Research</p>
+    <h2>Publications</h2>
+    <div class="posts">
+      {% for pub in site.data.publications %}
+      {% if pub.link %}<a class="post-row" href="{{ pub.link }}">{% else %}<div class="post-row">{% endif %}
+        <span class="date">{{ pub.status }}</span>
+        <span class="t">{{ pub.title }}</span>
+        <span class="s">{{ pub.authors }} · <i>{{ pub.venue }}</i></span>
+      {% if pub.link %}</a>{% else %}</div>{% endif %}
+      {% endfor %}
+    </div>
+    <p class="more">
+      {% if site.scholar and site.scholar != "" %}<a href="{{ site.scholar }}">Google Scholar →</a>{% endif %}
+      &nbsp; <a href="{{ site.orcid }}">ORCID →</a>
+    </p>
   </div>
 </section>
 
