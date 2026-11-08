@@ -1,5 +1,10 @@
 # Your projects. Copy a block (from "- title" down) to add another.
 # video: a short demo video in assets/videos/ (the poster image has the same name, ending .jpg)
+- title: AI Lead Responder (n8n + AI)
+  summary: An n8n automation that answers every enquiry in seconds. AI sorts it and writes a reply using only the business's real facts, the lead is saved to Google Sheets, and hot leads alert the owner.
+  result: "Form → AI → Sheets → Gmail · 4 tests"
+  tags: [n8n, AI automation, Workflow]
+  code: https://github.com/AbbasiSarah/n8n-ai-lead-responder
 - title: AI FAQ Chatbot for Businesses
   summary: Answers customer questions from a business's own FAQ, in English or Roman Urdu, even with typos. When it isn't sure, it hands the question to a human instead of guessing.
   result: "Runs in the browser · no API costs"
