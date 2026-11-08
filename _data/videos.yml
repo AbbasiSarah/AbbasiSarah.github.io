@@ -1,4 +1,14 @@
 # Videos hosted on this site (files in assets/videos/, with a .jpg poster of the same name). Newest first.
+- title: "Teach AI to read handwriting: a CNN in 8 steps (Google Colab)"
+  file: reel-colab-cnn
+- title: "Build your own spam filter with Naive Bayes (Google Colab)"
+  file: reel-colab-spam
+- title: "Find customer groups with K-Means (Google Colab)"
+  file: reel-colab-kmeans
+- title: "Will this student pass? Decision Trees in 7 steps (Google Colab)"
+  file: reel-colab-decision-tree
+- title: "Name a flower with KNN in 7 steps (Google Colab)"
+  file: reel-colab-knn
 - title: "Your first ML model in 8 steps (Google Colab)"
   file: reel-first-ml-model-colab
 - title: "Europe pushes back on AI data centres: protests in 15 countries"
