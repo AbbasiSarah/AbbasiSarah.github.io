@@ -30,7 +30,7 @@ layout: default
         {% if p.result %}<p class="result">{{ p.result }}</p>{% endif %}
         {% if p.video %}
         <details class="demo">
-          <summary>▶ Watch the 17-second demo</summary>
+          <summary>▶ Watch the demo</summary>
           <video controls playsinline preload="none" poster="{{ '/assets/videos/' | append: p.video | append: '.jpg' | relative_url }}">
             <source src="{{ '/assets/videos/' | append: p.video | append: '.mp4' | relative_url }}" type="video/mp4">
           </video>

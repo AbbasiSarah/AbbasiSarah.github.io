@@ -1,4 +1,8 @@
 # Videos hosted on this site (files in assets/videos/, with a .jpg poster of the same name). Newest first.
+- title: "An AI FAQ chatbot that knows when to ask a human"
+  file: demo-ai-faq-chatbot
+- title: "9 messy Excel files → 1 clean report, in one command"
+  file: demo-excel-report-automator
 - title: "Teach AI to read handwriting: a CNN in 8 steps (Google Colab)"
   file: reel-colab-cnn
 - title: "Build your own spam filter with Naive Bayes (Google Colab)"
