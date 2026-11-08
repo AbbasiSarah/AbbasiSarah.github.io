@@ -5,6 +5,8 @@ summary: "Over 100 groups across Europe held two days of action against giant da
 topic: AI policy
 ---
 
+<video class="post-video" controls playsinline preload="none" poster="{{ '/assets/videos/europe-data-centres-explained.jpg' | relative_url }}"><source src="{{ '/assets/videos/europe-data-centres-explained.mp4' | relative_url }}" type="video/mp4"></video>
+
 Every time we ask a chatbot a question, a computer somewhere does the work. Those computers live in **data centres**: huge buildings full of servers that need a lot of electricity, cooling and land. This weekend, people across Europe said: slow down.
 
 ## What happened
