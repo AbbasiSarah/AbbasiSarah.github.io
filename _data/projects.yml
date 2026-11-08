@@ -4,6 +4,7 @@
   summary: An n8n automation that answers every enquiry in seconds. AI sorts it and writes a reply using only the business's real facts, the lead is saved to Google Sheets, and hot leads alert the owner.
   result: "Form → AI → Sheets → Gmail · 4 tests"
   tags: [n8n, AI automation, Workflow]
+  video: demo-n8n-ai-lead-responder
   code: https://github.com/AbbasiSarah/n8n-ai-lead-responder
 - title: AI FAQ Chatbot for Businesses
   summary: Answers customer questions from a business's own FAQ, in English or Roman Urdu, even with typos. When it isn't sure, it hands the question to a human instead of guessing.

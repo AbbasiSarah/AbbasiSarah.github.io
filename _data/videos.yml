@@ -1,4 +1,6 @@
 # Videos hosted on this site (files in assets/videos/, with a .jpg poster of the same name). Newest first.
+- title: "Reply to customers in seconds with n8n + AI"
+  file: demo-n8n-ai-lead-responder
 - title: "An AI FAQ chatbot that knows when to ask a human"
   file: demo-ai-faq-chatbot
 - title: "9 messy Excel files → 1 clean report, in one command"
