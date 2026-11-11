@@ -62,6 +62,7 @@ layout: default
     <p class="more">
       {% if site.scholar and site.scholar != "" %}<a href="{{ site.scholar }}">Google Scholar →</a>{% endif %}
       &nbsp; <a href="{{ site.orcid }}">ORCID →</a>
+      {% if site.researchgate and site.researchgate != "" %}&nbsp; <a href="{{ site.researchgate }}">ResearchGate →</a>{% endif %}
     </p>
   </div>
 </section>
