@@ -20,7 +20,7 @@
   video: demo-excel-report-automator
   code: https://github.com/AbbasiSarah/excel-report-automator
 - title: "WearCNN-Guard: Depression Screening with a Guarantee"
-  summary: A 1-D CNN built from scratch reads one week of wrist activity from 8,723 US adults and screens for depression. Conformal prediction gives every answer a proven 90% guarantee, also for depressed people.
+  summary: A 1-D CNN built from scratch reads one week of wrist activity from 8,723 US adults and screens for depression. Conformal prediction makes its answers include the truth for 90% of people, depressed people too, and it says "not sure" when the data isn't enough.
   result: "90% guaranteed coverage · 8,723 people"
   tags: [Deep learning, Health AI, Research]
   video: demo-wearcnn-guard
