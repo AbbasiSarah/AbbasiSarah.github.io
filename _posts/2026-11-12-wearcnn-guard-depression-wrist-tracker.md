@@ -41,4 +41,4 @@ Wearables are everywhere, and AI health claims are often overconfident. A screen
 
 *This is a research project, not a medical device or a diagnosis. If you are struggling, please talk to a professional.*
 
-**[View the code on GitHub](https://github.com/AbbasiSarah/wearcnn-guard)**
+**[Try the live demo in your browser](https://abbasisarah.github.io/demos/wearcnn-guard/)** · **[View the code on GitHub](https://github.com/AbbasiSarah/wearcnn-guard)**

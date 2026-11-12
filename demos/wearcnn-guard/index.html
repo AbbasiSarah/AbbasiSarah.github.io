@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WearCNN-Guard demo · Depression screening from wrist activity · SheCodesAI</title>
+<meta name="description" content="Try WearCNN-Guard in your browser: load one week of minute-level wrist activity and see the model's three-way screening answer with a 90% conformal guarantee. Research demo by Sara Abbasi.">
+<style>
+  :root { --bg:#040b20; --bg2:#0b1e4a; --card:#09183c; --line:#1c3263; --ink:#eef3ff; --muted:#9fb0d4; --teal:#2fe0bf; --gold:#f5b70a; --red:#ff8a8a; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:var(--ink);
+         background:radial-gradient(1200px 700px at 85% -10%, var(--bg2), var(--bg) 60%) fixed; min-height:100vh; }
+  .wrap { max-width:820px; margin:0 auto; padding:28px 18px 40px; }
+  .brand { font-weight:700; color:var(--teal); text-decoration:none; }
+  .brand span { color:var(--muted); font-weight:400; }
+  h1 { font-size:clamp(26px,5vw,38px); margin:18px 0 6px; line-height:1.15; }
+  h1 em { color:var(--gold); font-style:normal; }
+  h2 { font-size:20px; margin:0 0 12px; }
+  .sub { color:var(--muted); margin:0 0 18px; line-height:1.55; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px; margin:16px 0; box-shadow:0 20px 60px rgba(0,0,0,.30); }
+  .warn { border-color:#5a4a14; background:rgba(245,183,10,.07); }
+  .warn b { color:var(--gold); }
+  ol { margin:0; padding-left:20px; line-height:1.65; color:var(--muted); }
+  ol b, ol code { color:var(--ink); }
+  code { background:#06122e; border:1px solid var(--line); padding:1px 6px; border-radius:6px; font-size:13px; }
+  pre { background:#06122e; border:1px solid var(--line); border-radius:12px; padding:12px 14px; color:var(--ink); font-size:13px; overflow:auto; margin:10px 0 0; }
+  .drop { border:2px dashed var(--line); border-radius:18px; padding:26px 16px; text-align:center; cursor:pointer; transition:.15s; }
+  .drop:hover, .drop.over { border-color:var(--teal); background:rgba(47,224,191,.05); }
+  .drop b { color:var(--teal); }
+  .row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+  button { border:1px solid var(--line); background:transparent; color:var(--ink); padding:9px 14px; border-radius:999px; cursor:pointer; font-size:14px; font-family:inherit; }
+  button:hover { border-color:var(--teal); color:var(--teal); }
+  .muted { color:var(--muted); font-size:14px; line-height:1.55; }
+  table { width:100%; border-collapse:collapse; font-size:14px; margin-top:8px; }
+  td, th { padding:6px 8px; border-bottom:1px solid var(--line); text-align:left; }
+  th { color:var(--muted); font-weight:500; }
+  .ok { color:var(--teal); } .no { color:var(--red); }
+  .answer { border-radius:18px; padding:18px; margin-top:6px; }
+  .answer h3 { margin:0 0 6px; font-size:24px; }
+  .a-dep { background:rgba(245,183,10,.10); border:1px solid var(--gold); } .a-dep h3 { color:var(--gold); }
+  .a-not { background:rgba(47,224,191,.08); border:1px solid var(--teal); } .a-not h3 { color:var(--teal); }
+  .a-uns { background:rgba(159,176,212,.08); border:1px solid var(--muted); } .a-uns h3 { color:var(--ink); }
+  .bar { height:12px; background:#10275a; border-radius:999px; overflow:hidden; margin:8px 0 4px; }
+  .bar i { display:block; height:100%; background:linear-gradient(90deg,var(--teal),var(--gold)); }
+  canvas { width:100%; height:180px; display:block; margin-top:10px; }
+  .err { color:var(--red); margin-top:10px; }
+  .hidden { display:none; }
+  .cta { padding:16px 18px; border:1px solid var(--line); border-radius:18px; background:rgba(47,224,191,.06); line-height:1.6; }
+  .cta a, .card a { color:var(--teal); }
+  footer { margin-top:26px; color:var(--muted); font-size:13px; }
+  footer em { color:var(--gold); font-style:normal; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="brand" href="https://abbasisarah.github.io">SheCodesAI <span>· Sara Abbasi</span></a>
+  <h1>WearCNN-Guard: <em>depression screening</em> from one week of wrist movement</h1>
+  <p class="sub">Load a week of minute-by-minute wrist activity. A 1-D CNN trained on 8,723 adults (NHANES) gives one of three answers, with a 90% conformal guarantee. <b>Everything runs in your browser: your file is never uploaded.</b></p>
+
+  <div class="card warn">
+    <b>Research demo, not a medical test.</b> This tool cannot diagnose depression. It was trained on research-grade wrist sensors, and results from consumer smartwatches have not been validated. If you are struggling, please talk to a doctor, a mental-health professional or someone you trust. In an emergency, contact your local emergency services.
+  </div>
+
+  <div class="card">
+    <h2>How to use it</h2>
+    <ol>
+      <li><b>Try a sample first:</b> click one of the three sample buttons below to see how it works.</li>
+      <li><b>Prepare your file:</b> a <code>.csv</code> with two columns, <code>timestamp</code> and <code>activity</code>, one row per minute:
+        <pre>timestamp,activity
+2026-01-05 00:00,0
+2026-01-05 00:01,12.5
+2026-01-05 00:02,340</pre></li>
+      <li><b>How much data:</b> at least <b>4 days</b>, each with <b>10+ hours</b> of wear (up to 7 days are used). Minutes with no data can be left out.</li>
+      <li><b>What "activity" means:</b> minute-level <b>activity counts</b> from a wrist accelerometer (for example ActiGraph, the device used in NHANES). Exports from research devices work best. Step counts or other watch scores are a different scale, so the result will be <b>less reliable</b>, and the page will warn you.</li>
+      <li><b>Drop the file</b> in the box below, or click to choose it. You'll see which days were usable, the activity pattern, and the answer.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Load data</h2>
+    <label class="drop" id="drop"><input type="file" id="file" accept=".csv,text/csv" class="hidden"><b>Drop a CSV file here</b> or click to choose one<br><span class="muted">Processed only on this device</span></label>
+    <div class="row">
+      <button data-s="likely_not">Sample A (real NHANES person)</button>
+      <button data-s="likely_depressed">Sample B (real NHANES person)</button>
+      <button data-s="unsure">Sample C (real NHANES person)</button>
+      <a class="muted" href="sample_likely_not.csv" download style="align-self:center">Download a sample CSV</a>
+    </div>
+    <div id="err" class="err"></div>
+  </div>
+
+  <div class="card hidden" id="days">
+    <h2>1. Which days were usable</h2>
+    <p class="muted">A day counts if the tracker was worn for at least 10 hours. Runs of 60+ minutes of zero movement are treated as "not worn".</p>
+    <table id="dayTable"></table>
+    <p class="muted" id="scaleWarn"></p>
+  </div>
+
+  <div class="card hidden" id="pattern">
+    <h2>2. Your average day</h2>
+    <p class="muted">Average activity (log scale) in 10-minute steps, midnight to midnight. The shaded band shows how much your days varied. These two curves are exactly what the CNN reads.</p>
+    <canvas id="chart" width="760" height="180"></canvas>
+  </div>
+
+  <div class="card hidden" id="result">
+    <h2>3. The answer</h2>
+    <div id="answer" class="answer"></div>
+    <p class="muted" style="margin-top:14px">Model score (probability of a PHQ-9 score of 10 or more): <b id="prob"></b></p>
+    <div class="bar"><i id="probBar"></i></div>
+    <p class="muted">The score alone is not the answer. Conformal prediction turns it into a set of possible labels that, across people, includes the true one at least 90% of the time, for depressed and non-depressed people separately. If both labels stay in the set, the honest answer is "not sure". In testing, about 1 in 3 people got a confident single answer.</p>
+  </div>
+
+  <div class="card">
+    <h2>How it works</h2>
+    <p class="muted">The 1-D CNN (3 convolution layers, written from scratch in NumPy, ported here to JavaScript) was trained on 6,978 NHANES 2011–2014 adults. The answer threshold was calibrated on 1,745 different people, separately for each class (Mondrian conformal prediction, α = 0.1). Accuracy is modest (AUC ≈ 0.65), because movement is only one part of mental health. This is why the model says "not sure" for most people instead of guessing.</p>
+  </div>
+
+  <div class="cta">Code and paper analyses: <a href="https://github.com/AbbasiSarah/wearcnn-guard">github.com/AbbasiSarah/wearcnn-guard</a> · Read the story: <a href="https://abbasisarah.github.io/">SheCodesAI blog</a></div>
+  <footer>Built by Sara Abbasi · SheCodesAI · <em>Don't just dream, Code !t</em></footer>
+</div>
+
+<script src="wearcnn.js"></script>
+<script>
+(function () {
+  "use strict";
+  let bundle = null;
+  const $ = id => document.getElementById(id);
+  const ANSWERS = {
+    depressed: ["a-dep", "Likely depressed (screen positive)", "The movement pattern looks like that of people who scored 10+ on the PHQ-9. This is not a diagnosis. The next step is the PHQ-9 questionnaire, and, if it is high, talking to a professional."],
+    not: ["a-not", "Likely not depressed (screen negative)", "The movement pattern looks like that of people who scored below 10 on the PHQ-9. Movement can't see everything: if you feel low, please still talk to someone."],
+    unsure: ["a-uns", "Not sure from movement alone", "This week of data isn't enough for a confident answer, which is the most common result. Please use the PHQ-9 questionnaire instead."]
+  };
+
+  async function loadModel() {
+    if (!bundle) bundle = await (await fetch("model.json")).json();
+    return bundle;
+  }
+
+  function showError(msg) { $("err").textContent = msg; }
+
+  function drawChart(input) {
+    const cv = $("chart"), g = cv.getContext("2d"), W = cv.width, H = cv.height, pad = 24;
+    g.clearRect(0, 0, W, H);
+    const mean = input[0], sd = input[1];
+    const max = Math.max(...mean.map((m, i) => m + sd[i]), 1);
+    const X = i => pad + (W - 2 * pad) * i / 143, Y = v => H - pad - (H - 2 * pad) * Math.max(0, v) / max;
+    g.fillStyle = "rgba(47,224,191,.15)"; g.beginPath();
+    mean.forEach((m, i) => (i ? g.lineTo(X(i), Y(m + sd[i])) : g.moveTo(X(i), Y(m + sd[i]))));
+    for (let i = 143; i >= 0; i--) g.lineTo(X(i), Y(mean[i] - sd[i]));
+    g.fill();
+    g.strokeStyle = "#2fe0bf"; g.lineWidth = 2; g.beginPath();
+    mean.forEach((m, i) => (i ? g.lineTo(X(i), Y(m)) : g.moveTo(X(i), Y(m)))); g.stroke();
+    g.fillStyle = "#9fb0d4"; g.font = "12px Inter, sans-serif";
+    ["00:00", "06:00", "12:00", "18:00", "24:00"].forEach((t, k) => g.fillText(t, X(k * 36) - (k === 4 ? 30 : 12), H - 6));
+  }
+
+  async function run(text) {
+    showError("");
+    ["days", "pattern", "result"].forEach(id => $(id).classList.add("hidden"));
+    let days;
+    try { days = WearCNN.parseCSV(text); } catch (e) { return showError(e.message); }
+    const built = WearCNN.buildInput(days);
+    const rows = built.info.map(d => `<tr><td>${d.date}</td><td>${d.wearHours.toFixed(1)} h worn</td><td class="${d.valid ? "ok" : "no"}">${d.valid ? "usable" : "too little wear"}</td></tr>`).join("");
+    $("dayTable").innerHTML = `<tr><th>Day</th><th>Wear time</th><th></th></tr>${rows}`;
+    // scale check: activity counts are usually in the hundreds to thousands per active minute
+    const vals = []; days.forEach(d => d.x.forEach(v => { if (isFinite(v) && v > 0) vals.push(v); }));
+    vals.sort((a, b) => a - b);
+    const p95 = vals.length ? vals[Math.floor(vals.length * 0.95)] : 0;
+    $("scaleWarn").innerHTML = p95 && p95 < 300 ? "<b style='color:#f5b70a'>Heads-up:</b> these values look smaller than accelerometer activity counts (they may be step counts). The model was not trained on this kind of data, so treat the answer as unreliable." : "";
+    $("days").classList.remove("hidden");
+    if (!built.ok) return showError(`Only ${built.nValid} usable day(s) found. The model needs at least 4 days with 10+ hours of wear each.`);
+    drawChart(built.input); $("pattern").classList.remove("hidden");
+    const b = await loadModel();
+    const r = WearCNN.predict(b, built.input);
+    const [cls, title, text2] = ANSWERS[r.answer];
+    $("answer").className = "answer " + cls;
+    $("answer").innerHTML = `<h3>${title}</h3><div class="muted" style="color:inherit;opacity:.9">${text2}</div>`;
+    $("prob").textContent = (r.p * 100).toFixed(1) + "%";
+    $("probBar").style.width = (r.p * 100).toFixed(1) + "%";
+    $("result").classList.remove("hidden");
+    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $("file").addEventListener("change", e => { const f = e.target.files[0]; if (f) f.text().then(run); });
+  const drop = $("drop");
+  ["dragover", "dragenter"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) f.text().then(run); });
+  document.querySelectorAll("button[data-s]").forEach(btn => btn.addEventListener("click", async () => {
+    try { run(await (await fetch(`sample_${btn.dataset.s}.csv`)).text()); } catch (e) { showError("Could not load the sample."); }
+  }));
+  loadModel().catch(() => showError("Could not load the model file."));
+})();
+</script>
+</body>
+</html>
