@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stack Sprint by Sara Abbasi | SheCodesAI</title>
+<meta name="author" content="Sara Abbasi">
+<meta name="description" content="Play a daily Python puzzle and build your practice streak in Stack Sprint, a browser game by Sara Abbasi.">
+<style>
+:root{color-scheme:dark;--ink:#f2f5ec;--muted:#aebcaf;--lime:#c8fa75;--line:#33473e;--panel:#15231e}
+*{box-sizing:border-box}body{margin:0;background:#0b1612;color:var(--ink);font:16px system-ui,sans-serif}
+header,main,footer{width:min(900px,calc(100% - 36px));margin:auto}header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:850;font-size:20px}.brand span,.accent{color:var(--lime)}.muted{color:var(--muted)}header small{font-size:13px}
+main{padding:48px 0 28px}h1{font-size:clamp(54px,11vw,104px);line-height:.9;letter-spacing:-.085em;margin:0 0 20px}p{line-height:1.55}h2{margin:0;font-size:23px;letter-spacing:-.035em}
+.layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(220px,1fr);gap:16px;margin-top:29px}.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:22px}.side{align-self:start}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}#mode{color:var(--lime);font:700 11px ui-monospace,monospace;text-transform:uppercase;letter-spacing:.09em}
+pre{margin:18px 0;background:#09120e;border:1px solid var(--line);border-radius:10px;padding:17px;white-space:pre-wrap;color:#d2ffc4;font:14px/1.55 ui-monospace,monospace;min-height:90px}
+#answers{display:grid;grid-template-columns:1fr 1fr;gap:9px}button,.link{border:1px solid #486254;border-radius:8px;background:#1b3026;color:var(--ink);padding:11px 13px;text-align:left;cursor:pointer;font:inherit;overflow-wrap:anywhere}button:hover:not(:disabled),.link:hover{border-color:var(--lime)}button:focus-visible,.link:focus-visible{outline:2px solid var(--lime);outline-offset:3px}button:disabled{cursor:default}.correct,.primary{background:var(--lime);color:#14200d;border-color:var(--lime);font-weight:750}.wrong{border-color:#fd957e;color:#ffc7ba}#feedback{min-height:3em;margin:12px 0 8px;font-size:14px}.controls{display:flex;flex-wrap:wrap;gap:8px}.controls button,.link{font-size:14px}.score{font-size:44px;font-weight:800;color:var(--lime);margin:8px 0 0}.side p{font-size:14px}.link{display:inline-block;text-decoration:none}footer{border-top:1px solid var(--line);padding:19px 0 32px;font-size:13px}
+@media(max-width:650px){main{padding-top:36px}.layout{grid-template-columns:1fr}.card{padding:17px}}
+
+:root{--ink:#fcf3ff;--muted:#c2b4d8;--lime:#b4ff79;--line:#483262;--panel:#211530}
+body{background:radial-gradient(ellipse at 76% 5%,#4e216b 0,transparent 40%),#120b21}
+header{border-color:#513264}main{position:relative}
+h1{text-shadow:0 7px #2d1642;line-height:.95}.accent{color:#ff99ed}
+.card{box-shadow:0 9px 0 #0e081a,0 18px 35px #0e081a55}
+pre{background:#130b22;border-color:#503968;color:#ceffb7}
+button,.link{background:#332146;border-color:#684d84}
+.correct,.primary{background:var(--lime);border-color:var(--lime);color:#18220f}
+#answers button{min-height:48px}
+.key{display:inline-grid;place-items:center;border:1px solid currentColor;border-radius:5px;font:11px ui-monospace,monospace;width:21px;height:21px;margin-right:8px;opacity:.8}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 21px}
+.stats p{margin:0}.stats b{display:block;font-size:26px;color:#ff99ed}
+#sound{font-size:13px}#date{margin-left:auto}
+.card.win{animation:win .4s ease-out}.card.miss{animation:miss .26s ease-out}
+@keyframes win{50%{box-shadow:0 0 32px #b4ff7999}}
+@keyframes miss{25%,75%{transform:translateX(4px)}50%{transform:translateX(-4px)}}
+@media(prefers-reduced-motion:reduce){.card.win,.card.miss{animation:none}}
+</style>
+</head>
+<body>
+<header><div class="brand"><span>&gt;_</span> Stack Sprint<br><small>by Sara Abbasi · SheCodesAI</small></div><small class="muted" id="date"></small><button id="sound" aria-pressed="false">Sound off</button></header>
+<main>
+<h1>Read the code.<br><span class="accent">Call the output.</span></h1>
+<p class="muted">One daily puzzle. Build your streak in practice mode. Play with keys 1–4 or tap an answer.</p>
+<div class="layout">
+<section class="card" id="arcade" aria-labelledby="question">
+<div class="top"><h2 id="question">What prints?</h2><span id="mode"></span></div>
+<pre><code id="code"></code></pre>
+<div id="answers"></div>
+<p id="feedback" class="muted" role="status"></p>
+<div class="controls"><button id="daily" class="primary">Daily challenge</button><button id="practice">Practice</button><button id="share">Copy result</button></div>
+</section>
+<aside class="card side">
+<h2>Daily record</h2><div class="score" id="score"></div><p class="muted" id="played"></p><div class="stats"><p class="muted">Streak <b id="streak">0</b></p><p class="muted">Best <b id="best">0</b></p></div>
+<h2>Practice with Sara</h2><p class="muted">Want live Python practice? Ask about a paid one-to-one session with Sara Abbasi, a Computer Science lecturer.</p>
+<a class="link" href="https://www.linkedin.com/in/sara-abbasi-552a1b115/" target="_blank" rel="noopener">Message Sara ↗</a>
+</aside>
+</div>
+</main>
+<footer class="muted">Stack Sprint by Sara Abbasi · SheCodesAI. Progress stays in this browser.</footer>
+<script>
+const puzzles = [
+  ['items = [1, 2, 3]\nprint(items[::-1])',['[3, 2, 1]','[2, 3]','[1, 2, 3]','[]'],0,'A slice with step −1 reads the list in reverse.'],
+  ['x = [2, 4]\ny = x\ny.append(6)\nprint(x)',['[2, 4]','[2, 4, 6]','[6]','Error'],1,'Both names refer to the same list. Appending through y changes what x sees.'],
+  ['print(sum(range(1, 5)))',['10','15','9','5'],0,'range excludes its stop value, so the sum is 1 + 2 + 3 + 4.'],
+  ['print(bool("False"), bool([]))',['False False','True True','True False','False True'],2,'A nonempty string is truthy. An empty list is falsy.'],
+  ['print([x * x for x in range(5) if x % 2])',['[0, 4, 16]','[1, 3]','[1, 9]','[4, 16]'],2,'The condition keeps odd numbers, then the expression squares them.'],
+  ['print("PYTHON"[1:5:2])',['YH','YT','YHN','PTO'],0,'The slice takes characters at indices 1 and 3. The character at index 3 is H.'],
+  ['print(7 // 2, 7 % 2)',['3.5 1','3 1','4 0','3 2'],1,'Floor division gives 3 and modulo gives the remainder, 1.'],
+  ['data = {"a": 1, "b": 2}\nprint(data.get("c", 9))',['None','2','Error','9'],3,'dict.get returns the supplied default when the key is missing.'],
+  ['a = [1, 2]\nb = a.copy()\nb[0] = 8\nprint(a[0])',['8','2','1','Error'],2,'copy creates a separate list, so assigning a slot in b leaves a alone.'],
+  ['print(len(set([2, 2, 4, 4, 6])))',['6','3','4','2'],1,'A set retains one instance of each distinct value.'],
+  ['print(list(zip([1, 2, 3], ["a", "b"])))',['[(1, "a"), (2, "b")]','[(1, "a"), (2, "b"), (3, None)]','[(1, 2, 3), ("a", "b")]','Error'],0,'zip stops when its shortest input runs out.'],
+  ['print("3" * 2 + "1")',['7','61','331','Error'],2,'Multiplication repeats the string to make "33", then + concatenates "1".']
+];
+const el = id => document.getElementById(id);
+const day = new Date().toISOString().slice(0,10);
+const dayIndex = Math.floor(Date.parse(day) / 86400000);
+const dailyIndex = dayIndex % puzzles.length;
+let history = {};
+try {
+  const saved = JSON.parse(localStorage.getItem('stack-sprint-v1') || '{}');
+  if (saved && typeof saved === 'object' && !Array.isArray(saved)) history = saved;
+} catch {}
+let mode = 'daily';
+let index = dailyIndex;
+let practiceIndex = dailyIndex;
+let selected;
+let streak = 0;
+let best = 0;
+let sound = false;
+let audio;
+try {
+  best = Number(localStorage.getItem('stack-sprint-best')) || 0;
+  sound = localStorage.getItem('stack-sprint-sound') === 'on';
+} catch {}
+function updateSound() {
+  el('sound').textContent = sound ? 'Sound on' : 'Sound off';
+  el('sound').setAttribute('aria-pressed', String(sound));
+}
+function playSound(notes) {
+  if (!sound) return;
+  const Audio = window.AudioContext || window.webkitAudioContext;
+  if (!Audio) return;
+  try {
+    audio ||= new Audio();
+    if (audio.state === 'suspended') audio.resume().catch(() => {});
+    notes.forEach((frequency, i) => {
+      const oscillator = audio.createOscillator();
+      const volume = audio.createGain();
+      const start = audio.currentTime + i * 0.085;
+      oscillator.type = 'triangle';
+      oscillator.frequency.value = frequency;
+      volume.gain.setValueAtTime(0.001, start);
+      volume.gain.linearRampToValueAtTime(0.13, start + 0.02);
+      volume.gain.exponentialRampToValueAtTime(0.001, start + 0.15);
+      oscillator.connect(volume).connect(audio.destination);
+      oscillator.start(start);
+      oscillator.stop(start + 0.16);
+    });
+  } catch {}
+}
+el('sound').addEventListener('click', () => {
+  sound = !sound;
+  try { localStorage.setItem('stack-sprint-sound', sound ? 'on' : 'off'); } catch {}
+  updateSound();
+  playSound([440, 660]);
+});
+updateSound();
+el('date').textContent = new Intl.DateTimeFormat('en',{dateStyle:'medium',timeZone:'UTC'}).format(new Date(day));
+function render() {
+  const [code, answers, correct, explanation] = puzzles[index];
+  const counts = Object.values(history);
+  el('mode').textContent = mode === 'daily' ? 'Daily puzzle' : 'Practice round';
+  el('code').textContent = code;
+  el('streak').textContent = streak;
+  el('best').textContent = best;
+  el('practice').textContent = mode === 'practice' ? 'Next puzzle' : 'Play practice';
+  el('share').disabled = selected === undefined;
+  el('score').textContent = counts.filter(Boolean).length + '/' + counts.length;
+  el('played').textContent = 'Correct daily puzzles / daily attempts';
+  el('feedback').textContent = selected === undefined ? 'Choose one answer.' :
+    (selected === correct ? 'Correct. ' : 'The answer is ' + answers[correct] + '. ') + explanation;
+  el('answers').replaceChildren(...answers.map((answer, position) => {
+    const button = document.createElement('button');
+    const key = document.createElement('span');
+    key.className = 'key';
+    key.setAttribute('aria-hidden', 'true');
+    key.textContent = position + 1;
+    button.append(key, answer);
+    button.setAttribute('aria-keyshortcuts', String(position + 1));
+    button.disabled = selected !== undefined;
+    if (button.disabled && position === correct) button.classList.add('correct');
+    if (position === selected && position !== correct) button.classList.add('wrong');
+    button.addEventListener('click', () => {
+      selected = position;
+      const won = position === correct;
+      if (mode === 'practice') {
+        streak = won ? streak + 1 : 0;
+        best = Math.max(best, streak);
+        try { localStorage.setItem('stack-sprint-best', String(best)); } catch {}
+      }
+      playSound(won ? [523, 659, 784] : [220, 165]);
+      const arcade = el('arcade');
+      arcade.classList.remove('win', 'miss');
+      requestAnimationFrame(() => arcade.classList.add(won ? 'win' : 'miss'));
+      if (mode === 'daily') {
+        history[day] = position === correct;
+        try { localStorage.setItem('stack-sprint-v1', JSON.stringify(history)); } catch {}
+      }
+      render();
+    });
+    return button;
+  }));
+}
+function daily() {
+  mode = 'daily'; index = dailyIndex;
+  selected = history[day] === undefined ? undefined : history[day] ? puzzles[index][2] : -1;
+  render();
+}
+document.addEventListener('keydown', event => {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.repeat ||
+      event.target.closest('input,textarea,select,[contenteditable]')) return;
+  if (/^[1-4]$/.test(event.key)) {
+    const option = el('answers').children[Number(event.key) - 1];
+    if (option && !option.disabled) option.click();
+  }
+});
+el('daily').addEventListener('click', daily);
+el('practice').addEventListener('click', () => {
+  mode = 'practice';
+  practiceIndex = (practiceIndex + 1) % puzzles.length;
+  if (practiceIndex === dailyIndex) practiceIndex = (practiceIndex + 1) % puzzles.length;
+  index = practiceIndex; selected = undefined; render();
+});
+el('share').addEventListener('click', async () => {
+  const result = 'Stack Sprint · ' + (mode === 'daily' ? day : 'Practice') + ' · ' +
+    (selected === puzzles[index][2] ? '✓ Solved' : '○ Attempted');
+  try {
+    await navigator.clipboard.writeText(result);
+    el('feedback').textContent = 'Result copied.';
+  } catch {
+    el('feedback').textContent = result;
+  }
+});
+daily();
+</script>
+</body>
+</html>
