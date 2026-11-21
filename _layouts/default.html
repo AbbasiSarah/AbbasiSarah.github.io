@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Security: only allow content from this site, Google Fonts and Instagram embeds -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.instagram.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://www.instagram.com; connect-src 'self' https://www.instagram.com; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
+<!-- Security: only allow content from this site, Google Fonts, Instagram embeds and Google AdSense -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.instagram.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://www.googletagservices.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://www.instagram.com https://*.doubleclick.net https://*.googlesyndication.com https://*.google.com https://*.adtrafficquality.google; connect-src 'self' https://www.instagram.com https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>{% if page.title %}{{ page.title }} · {{ site.title }}{% else %}{{ site.title }} · {{ site.author }}{% endif %}</title>
 <meta name="description" content="{% if page.summary %}{{ page.summary }}{% else %}{{ site.description }}{% endif %}">
@@ -15,6 +15,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+<!-- Google AdSense -->
+<meta name="google-adsense-account" content="ca-pub-6183161717729283">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6183161717729283" crossorigin="anonymous"></script>
 </head>
 <body>
 <header class="nav">
@@ -27,6 +30,7 @@
       <a href="{{ '/#projects' | relative_url }}">Projects</a>
       <a href="{{ '/roadmap/' | relative_url }}">ML Roadmap</a>
       <a href="{{ '/play/' | relative_url }}">Code Quest</a>
+      <a href="{{ '/arcade.html' | relative_url }}">Arcade</a>
       <a href="{{ '/blog/' | relative_url }}">AI Trends</a>
       <a href="{{ '/#videos' | relative_url }}">Videos</a>
       <a href="{{ '/hire/' | relative_url }}">Hire me</a>
