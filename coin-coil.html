@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Sara Abbasi">
+<title>Coin Coil · SheCodesAI</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#151128;color:#fbf0ff;--yellow:#ffda75;--purple:#332557}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#42256a,transparent 70%)}
+main{width:min(100% - 24px,500px);margin:auto;padding:22px 0}header{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px}
+h1{font-size:clamp(34px,10vw,68px);letter-spacing:-.09em;line-height:.85;margin:0 0 9px;color:var(--yellow)}small,p{color:#d5c5ec}
+.score{display:flex;gap:12px;text-align:center;font-size:12px}.score strong{display:block;font-size:25px;color:var(--yellow)}
+.board{position:relative;overflow:hidden;border:2px solid #6c4fa5;border-radius:15px;box-shadow:0 9px #10091e}
+canvas{width:100%;display:block;touch-action:none;aspect-ratio:1;background:#201738}
+.overlay{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;padding:12px;background:#180e30d9}
+[hidden]{display:none!important}.overlay h2{font-size:clamp(24px,7vw,46px);margin:0}.overlay p{margin:7px 0 16px}
+button{font:inherit;font-weight:750;border:1px solid #9776d1;border-radius:9px;padding:10px;color:#fbf0ff;background:var(--purple);cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+#start{color:#251934;background:var(--yellow);border-color:var(--yellow);padding-inline:20px}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:17px}
+.pad{display:grid;grid-template-columns:repeat(3,44px);gap:4px}
+.pad button{padding:0;width:44px;height:40px;font-size:20px}
+.pad [data-dir="up"]{grid-column:2}.pad [data-dir="left"]{grid-column:1;grid-row:2}.pad [data-dir="down"]{grid-column:2;grid-row:2}.pad [data-dir="right"]{grid-column:3;grid-row:2}
+.hint{margin:10px 0 0;font-size:13px}
+</style>
+<main>
+<header><div><h1>Coin Coil</h1><small>By Sara Abbasi · SheCodesAI</small></div><div class="score"><div>Coins<strong id="score">0</strong></div><div>Best<strong id="best">0</strong></div></div></header>
+<div class="board">
+<canvas id="board" width="480" height="480" aria-label="Coin Coil game board"></canvas>
+<div class="overlay" id="overlay">
+<h2 id="title">Ready to roll?</h2><p id="message" role="status">Collect coins. Avoid the walls and your own tail.</p>
+<button id="start" type="button">Play</button>
+</div>
+</div>
+<div class="controls">
+<div class="pad" aria-label="Direction controls">
+<button type="button" data-dir="up" aria-label="Up">↑</button><button type="button" data-dir="left" aria-label="Left">←</button><button type="button" data-dir="down" aria-label="Down">↓</button><button type="button" data-dir="right" aria-label="Right">→</button>
+</div>
+<button id="pause" type="button" disabled>Pause</button>
+</div>
+<p class="hint">Swipe on the board, tap the arrows, or use your keyboard.</p>
+<p><a href="./arcade.html">Back to the arcade</a></p>
+</main>
+<script>
+const get = id => document.getElementById(id);
+const canvas = get('board');
+const ctx = canvas.getContext('2d');
+const grid = 18;
+const cell = canvas.width / grid;
+const vectors = {up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+let snake, coin, direction, turns, points, state, timer;
+let best = 0;
+try { best = Number(localStorage.getItem('coin-coil-best')) || 0; } catch {}
+const occupied = (point, body = snake) => body.some(([x,y]) => x === point[0] && y === point[1]);
+function nextCoin() {
+  const open = Array.from({length:grid*grid}, (_,i)=>[i%grid,Math.floor(i/grid)]).filter(point=>!occupied(point));
+  return open.length ? open[Math.floor(Math.random()*open.length)] : null;
+}
+function reset() {
+  snake = [[7,9],[6,9],[5,9]];
+  coin = nextCoin();
+  direction = vectors.right;
+  turns = [];
+  points = 0;
+}
+function draw() {
+  for (let y=0;y<grid;y++) for(let x=0;x<grid;x++){
+    ctx.fillStyle=(x+y)%2 ? '#261c41' : '#2b2047';
+    ctx.fillRect(x*cell,y*cell,cell+1,cell+1);
+  }
+  if(coin){
+    const [x,y]=coin.map(v=>(v+.5)*cell);
+    ctx.fillStyle='#ed9d38';
+    ctx.beginPath();ctx.arc(x,y,cell*.37,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#ffdc74';
+    ctx.beginPath();ctx.arc(x,y-1,cell*.28,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#a1601f';ctx.fillRect(x-1,y-5,2,9);
+  }
+  snake.forEach(([x,y],i)=>{
+    ctx.fillStyle=i===0?'#e4ffa3':i%2?'#95db83':'#a7e490';
+    ctx.beginPath();ctx.roundRect(x*cell+1,y*cell+1,cell-2,cell-2,6);ctx.fill();
+    if(i===0){
+      const [dx,dy]=direction;
+      const cx=(x+.5)*cell+dx*4, cy=(y+.5)*cell+dy*4;
+      ctx.fillStyle='#1c2e26';
+      for(const sign of [-1,1]){
+        ctx.beginPath();ctx.arc(cx-dy*sign*5,cy+dx*sign*5,2.1,0,Math.PI*2);ctx.fill();
+      }
+    }
+  });
+  get('score').textContent=points;
+  get('best').textContent=best;
+}
+function showOverlay(title,message,label) {
+  get('overlay').hidden=false;
+  get('title').textContent=title;
+  get('message').textContent=message;
+  get('start').textContent=label;
+}
+function finish(won) {
+  clearTimeout(timer);
+  state='over';
+  get('pause').disabled=true;
+  draw();
+  showOverlay(won?'Board cleared!':'Run over',points+' coins collected.','Play again');
+}
+function tick() {
+  if(state!=='running') return;
+  if(turns.length) direction=turns.shift();
+  const head=snake[0].map((v,i)=>v+direction[i]);
+  const collecting=coin && head.every((v,i)=>v===coin[i]);
+  const hitWall=head.some(v=>v<0||v>=grid);
+  if(hitWall||occupied(head,collecting?snake:snake.slice(0,-1))){finish(false);return;}
+  snake.unshift(head);
+  if(collecting){
+    points++;
+    if(points>best){best=points;try{localStorage.setItem('coin-coil-best',String(best));}catch{}}
+    coin=nextCoin();
+    if(!coin){finish(true);return;}
+  }else snake.pop();
+  draw();
+  schedule();
+}
+function schedule(){clearTimeout(timer);timer=setTimeout(tick,Math.max(80,190-points*5));}
+function start(){
+  if(state!=='paused') reset();
+  state='running';
+  get('overlay').hidden=true;
+  get('pause').disabled=false;
+  draw();schedule();
+}
+function pause(){
+  if(state!=='running') return;
+  state='paused';clearTimeout(timer);get('pause').disabled=true;
+  showOverlay('Paused','Your coins are safe.','Resume');
+}
+function steer(name){
+  if(state!=='running') return;
+  const candidate=vectors[name];
+  const previous=turns.at(-1)||direction;
+  if(candidate===previous||candidate[0]===-previous[0]&&candidate[1]===-previous[1]||turns.length>=2)return;
+  turns.push(candidate);
+}
+const keys={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
+document.addEventListener('keydown',e=>{
+  const name=keys[e.key];
+  if(name){e.preventDefault();steer(name);}
+  else if(e.code==='Space'&&e.target.tagName!=='BUTTON'){e.preventDefault();if(state==='running')pause();else start();}
+});
+for(const button of document.querySelectorAll('[data-dir]'))button.addEventListener('click',()=>steer(button.dataset.dir));
+get('start').addEventListener('click',start);
+get('pause').addEventListener('click',pause);
+let touch;
+canvas.addEventListener('pointerdown',event=>{
+  touch={id:event.pointerId,x:event.clientX,y:event.clientY};
+  canvas.setPointerCapture(event.pointerId);
+});
+canvas.addEventListener('pointermove',event=>{
+  if(!touch||touch.id!==event.pointerId)return;
+  const dx=event.clientX-touch.x,dy=event.clientY-touch.y;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<16)return;
+  steer(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'));
+  touch.x=event.clientX;touch.y=event.clientY;
+});
+for(const event of ['pointerup','pointercancel'])canvas.addEventListener(event,()=>touch=null);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
+state='ready';reset();draw();
+</script>
+</html>
