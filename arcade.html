@@ -24,14 +24,19 @@ p{color:var(--muted);line-height:1.5}p[role=status]{min-height:1.5em}
 .music-toggle[aria-pressed=true]{background:#ffda75;color:#241731;border-color:#ffda75}
 .arcade-toast{position:fixed;z-index:5;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 24px);background:#211733;border:1px solid #e6b662;color:#ffe9b3;border-radius:12px;padding:9px 15px;font:700 14px system-ui,sans-serif;box-shadow:0 7px 22px #0007;text-align:center;pointer-events:none}
 .arcade-toast[hidden]{display:none}
+
+.tabs button,nav a{display:inline-flex;align-items:center;gap:7px}
+.game-icon{display:inline-grid;place-items:center;width:29px;height:29px;flex:none;border-radius:7px;background:#fff1;font-size:17px;line-height:1}
+.tabs button[aria-pressed=true] .game-icon{background:#24173319}
+@media(max-width:520px){.tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tabs button{justify-content:flex-start;text-align:left;padding-inline:7px}.game-icon{width:25px;height:25px}}
 </style>
 <main>
-<header><strong>SheCodesAI · Sara Abbasi</strong><nav aria-label="More games"><a href="./stack-sprint.html">Stack Sprint</a><a href="./coin-coil.html">Coin Coil</a><button type="button" id="music-toggle" class="music-toggle" aria-pressed="false">Enable audio</button></nav></header>
+<header><strong>SheCodesAI · Sara Abbasi</strong><nav aria-label="More games"><a href="./stack-sprint.html"><span class="game-icon" aria-hidden="true">⌨️</span><span>Stack Sprint</span></a><a href="./coin-coil.html"><span class="game-icon" aria-hidden="true">🐍</span><span>Coin Coil</span></a><button type="button" id="music-toggle" class="music-toggle" aria-pressed="false">🔊 Enable sound</button></nav></header>
 <h1>Arcade</h1>
 <div class="tabs" role="group" aria-label="Choose a game">
-<button type="button" data-game="memory" aria-pressed="true">Memory Match</button>
-<button type="button" data-game="stars" aria-pressed="false">Star Catch</button>
-<button type="button" data-game="react" aria-pressed="false">Quick Color</button>
+<button type="button" data-game="memory" aria-pressed="true"><span class="game-icon" aria-hidden="true">🧩</span><span>Memory Match</span></button>
+<button type="button" data-game="stars" aria-pressed="false"><span class="game-icon" aria-hidden="true">⭐</span><span>Star Catch</span></button>
+<button type="button" data-game="react" aria-pressed="false"><span class="game-icon" aria-hidden="true">⚡</span><span>Quick Color</span></button>
 </div>
 <section class="panel" id="memory">
 <h2>Memory Match</h2>
@@ -60,11 +65,12 @@ const musicTrack = document.getElementById('arcade-music');
 const musicButton = document.getElementById('music-toggle');
 const rewardMessage = document.getElementById('arcade-toast');
 let rewardTimer, soundContext, preference, playbackAttempt = 0;
-try { preference = localStorage.getItem(soundKey); } catch {}
 let musicEnabled = false;
+const playheadKey = soundKey + ':playhead';
+try { preference = localStorage.getItem(soundKey); } catch {}
 musicTrack.volume = .40;
 function updateSoundButton() {
-  musicButton.textContent = musicEnabled ? 'Audio on' : preference === 'off' ? 'Audio off' : 'Enable audio';
+  musicButton.textContent = musicEnabled ? '🔊 Sound on' : preference === 'off' ? '🔇 Sound off' : '🔊 Enable sound';
   musicButton.setAttribute('aria-pressed', String(musicEnabled));
 }
 function unlockEffects() {
@@ -82,11 +88,16 @@ function syncMusic() {
     if (attempt !== playbackAttempt) return;
     musicEnabled = false;
     updateSoundButton();
-    musicButton.textContent = 'Retry audio';
+    if (preference === 'on') musicButton.textContent = '🔊 Tap for sound';
   });
+}
+function setSoundPreference(option) {
+  preference = option;
+  try { localStorage.setItem(soundKey, option); } catch {}
 }
 function enableAudioOnPlay() {
   if (preference === 'off') return;
+  if (preference !== 'on') setSoundPreference('on');
   unlockEffects();
   if (!musicEnabled) {
     musicEnabled = true;
@@ -94,12 +105,37 @@ function enableAudioOnPlay() {
     syncMusic();
   }
 }
+function restorePlayhead() {
+  try {
+    const position = Number(sessionStorage.getItem(playheadKey));
+    if (Number.isFinite(position) && position > 0 && Number.isFinite(musicTrack.duration)) {
+      musicTrack.currentTime = position % musicTrack.duration;
+    }
+  } catch {}
+}
+musicTrack.addEventListener('loadedmetadata', restorePlayhead, {once:true});
+window.addEventListener('pagehide', () => {
+  try {
+    if (musicEnabled && musicTrack.currentTime > 0) sessionStorage.setItem(playheadKey, String(musicTrack.currentTime));
+  } catch {}
+});
+window.addEventListener('pageshow', event => {
+  if (!event.persisted) return;
+  try { preference = localStorage.getItem(soundKey); } catch {}
+  musicEnabled = preference === 'on';
+  updateSoundButton();
+  syncMusic();
+});
 musicButton.addEventListener('click', () => {
-  preference = musicEnabled ? 'off' : 'on';
-  try { localStorage.setItem(soundKey, preference); } catch {}
+  setSoundPreference(musicEnabled ? 'off' : 'on');
   if (preference === 'on') enableAudioOnPlay();
   else { musicEnabled = false; updateSoundButton(); syncMusic(); }
 });
+if (preference === 'on') {
+  musicEnabled = true;
+  if (musicTrack.readyState > 0) restorePlayhead();
+  syncMusic();
+}
 updateSoundButton();
 document.addEventListener('visibilitychange', syncMusic);
 function playReward(kind) {

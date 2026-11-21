@@ -27,9 +27,14 @@ button:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
 .music-toggle[aria-pressed=true]{background:#ffda75;color:#241731;border-color:#ffda75}
 .arcade-toast{position:fixed;z-index:5;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 24px);background:#211733;border:1px solid #e6b662;color:#ffe9b3;border-radius:12px;padding:9px 15px;font:700 14px system-ui,sans-serif;box-shadow:0 7px 22px #0007;text-align:center;pointer-events:none}
 .arcade-toast[hidden]{display:none}
+
+header{position:relative;isolation:isolate;min-height:105px;align-items:center;padding:14px 12px;margin-bottom:16px;border-radius:15px;overflow:hidden;background:linear-gradient(110deg,#2a1d42,#1c1730)}
+#snake-banner{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:transparent;z-index:-1;pointer-events:none;opacity:.78}
+header h1,header small,.score{text-shadow:0 2px 6px #151128}
+@media(max-width:380px){header{padding-inline:9px}header small{font-size:11px}.score{gap:7px}}
 </style>
 <main>
-<header><div><h1>Coin Coil</h1><small>By Sara Abbasi · SheCodesAI</small></div><div class="score"><div>Coins<strong id="score">0</strong></div><div>Best<strong id="best">0</strong></div></div></header>
+<header><canvas id="snake-banner" width="960" height="180" aria-hidden="true"></canvas><div><h1>Coin Coil</h1><small>By Sara Abbasi · SheCodesAI</small></div><div class="score"><div>Coins<strong id="score">0</strong></div><div>Best<strong id="best">0</strong></div></div></header>
 <div class="board">
 <canvas id="board" width="480" height="480" aria-label="Coin Coil game board"></canvas>
 <div class="overlay" id="overlay">
@@ -41,7 +46,7 @@ button:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
 <div class="pad" aria-label="Direction controls">
 <button type="button" data-dir="up" aria-label="Up">↑</button><button type="button" data-dir="left" aria-label="Left">←</button><button type="button" data-dir="down" aria-label="Down">↓</button><button type="button" data-dir="right" aria-label="Right">→</button>
 </div>
-<button type="button" id="music-toggle" class="music-toggle" aria-pressed="false">Enable audio</button>
+<button type="button" id="music-toggle" class="music-toggle" aria-pressed="false">🔊 Enable sound</button>
 <button id="pause" type="button" disabled>Pause</button>
 </div>
 <p class="hint">Swipe on the board, tap the arrows, or use your keyboard.</p>
@@ -56,11 +61,12 @@ const musicTrack = document.getElementById('arcade-music');
 const musicButton = document.getElementById('music-toggle');
 const rewardMessage = document.getElementById('arcade-toast');
 let rewardTimer, soundContext, preference, playbackAttempt = 0;
-try { preference = localStorage.getItem(soundKey); } catch {}
 let musicEnabled = false;
+const playheadKey = soundKey + ':playhead';
+try { preference = localStorage.getItem(soundKey); } catch {}
 musicTrack.volume = .40;
 function updateSoundButton() {
-  musicButton.textContent = musicEnabled ? 'Audio on' : preference === 'off' ? 'Audio off' : 'Enable audio';
+  musicButton.textContent = musicEnabled ? '🔊 Sound on' : preference === 'off' ? '🔇 Sound off' : '🔊 Enable sound';
   musicButton.setAttribute('aria-pressed', String(musicEnabled));
 }
 function unlockEffects() {
@@ -78,11 +84,16 @@ function syncMusic() {
     if (attempt !== playbackAttempt) return;
     musicEnabled = false;
     updateSoundButton();
-    musicButton.textContent = 'Retry audio';
+    if (preference === 'on') musicButton.textContent = '🔊 Tap for sound';
   });
+}
+function setSoundPreference(option) {
+  preference = option;
+  try { localStorage.setItem(soundKey, option); } catch {}
 }
 function enableAudioOnPlay() {
   if (preference === 'off') return;
+  if (preference !== 'on') setSoundPreference('on');
   unlockEffects();
   if (!musicEnabled) {
     musicEnabled = true;
@@ -90,12 +101,37 @@ function enableAudioOnPlay() {
     syncMusic();
   }
 }
+function restorePlayhead() {
+  try {
+    const position = Number(sessionStorage.getItem(playheadKey));
+    if (Number.isFinite(position) && position > 0 && Number.isFinite(musicTrack.duration)) {
+      musicTrack.currentTime = position % musicTrack.duration;
+    }
+  } catch {}
+}
+musicTrack.addEventListener('loadedmetadata', restorePlayhead, {once:true});
+window.addEventListener('pagehide', () => {
+  try {
+    if (musicEnabled && musicTrack.currentTime > 0) sessionStorage.setItem(playheadKey, String(musicTrack.currentTime));
+  } catch {}
+});
+window.addEventListener('pageshow', event => {
+  if (!event.persisted) return;
+  try { preference = localStorage.getItem(soundKey); } catch {}
+  musicEnabled = preference === 'on';
+  updateSoundButton();
+  syncMusic();
+});
 musicButton.addEventListener('click', () => {
-  preference = musicEnabled ? 'off' : 'on';
-  try { localStorage.setItem(soundKey, preference); } catch {}
+  setSoundPreference(musicEnabled ? 'off' : 'on');
   if (preference === 'on') enableAudioOnPlay();
   else { musicEnabled = false; updateSoundButton(); syncMusic(); }
 });
+if (preference === 'on') {
+  musicEnabled = true;
+  if (musicTrack.readyState > 0) restorePlayhead();
+  syncMusic();
+}
 updateSoundButton();
 document.addEventListener('visibilitychange', syncMusic);
 function playReward(kind) {
@@ -247,5 +283,35 @@ canvas.addEventListener('pointermove',event=>{
 for(const event of ['pointerup','pointercancel'])canvas.addEventListener(event,()=>touch=null);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
 state='ready';reset();draw();
+
+const banner = get('snake-banner');
+const brush = banner.getContext('2d');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let bannerFrame;
+function paintBanner(time) {
+  brush.clearRect(0,0,banner.width,banner.height);
+  const samples=24, seconds=time/1000;
+  for(let i=samples-1;i>=0;i--){
+    const x=900-i*22;
+    const y=86+32*Math.sin(i*.49-seconds*2.2);
+    const radius=10+i/(samples-1)*2;
+    brush.fillStyle=i===0?'#a8e681':i%2?'#507648':'#649457';
+    brush.beginPath();brush.arc(x,y,radius,0,Math.PI*2);brush.fill();
+    if(i===0){
+      brush.fillStyle='#192b23';
+      for(const offset of [-4,4]){
+        brush.beginPath();brush.arc(x+4,y+offset,2.1,0,Math.PI*2);brush.fill();
+      }
+    }
+  }
+  if(!reduceMotion.matches && !document.hidden)bannerFrame=requestAnimationFrame(paintBanner);
+}
+function refreshBanner(){
+  cancelAnimationFrame(bannerFrame);
+  paintBanner(0);
+}
+reduceMotion.addEventListener('change',refreshBanner);
+document.addEventListener('visibilitychange',refreshBanner);
+refreshBanner();
 </script>
 </html>

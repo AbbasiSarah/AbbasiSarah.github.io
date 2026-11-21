@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ObpzJWMd3x+ZFYOh28P+u5NKHdHvuN7Fx2YgnVTy1lk='; style-src 'sha256-Ri6VcpVe4KKRiGODqptXCYGXuTa9kzMPL9drhJBrEew='; img-src data:; media-src data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-mhbQ+ogWuaU/aZnMZqHHjfC4ju0RvZaRnZpCCTyGWOs='; style-src 'sha256-Ri6VcpVe4KKRiGODqptXCYGXuTa9kzMPL9drhJBrEew='; img-src data:; media-src data:; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stack Sprint by Sara Abbasi | SheCodesAI</title>
 <meta name="author" content="Sara Abbasi">
@@ -73,9 +73,9 @@ button,.link{background:#332146;border-color:#684d84}
 </style>
 </head>
 <body>
-<header><div class="brand"><span>&gt;_</span> Stack Sprint<br><small>by Sara Abbasi · SheCodesAI</small></div><small class="muted" id="date"></small><button id="sound" aria-pressed="false">Sound off</button></header>
+<header><div class="brand"><span>&gt;_</span> Stack Sprint<br><small>by Sara Abbasi · SheCodesAI</small></div><small class="muted" id="date"></small></header>
 <main>
-<div class="controls"><a class="link" href="./arcade.html">Play more arcade games ↗</a><button type="button" id="music-toggle" class="music-toggle" aria-pressed="false">Enable audio</button></div>
+<div class="controls"><a class="link" href="./arcade.html"><span class="game-icon" aria-hidden="true">🎮</span> Play more arcade games ↗</a><button type="button" id="music-toggle" class="music-toggle" aria-pressed="false">🔊 Enable sound</button></div>
 <div class="hero"><div><h1>Read the code.<br><span class="accent">Call the output.</span></h1>
 <p class="muted">Pick Python, C++, or Java. Play a daily puzzle or build a streak in practice. Use keys 1–4 or tap an answer.</p>
 </div>
@@ -122,11 +122,12 @@ const musicTrack = document.getElementById('arcade-music');
 const musicButton = document.getElementById('music-toggle');
 const rewardMessage = document.getElementById('arcade-toast');
 let rewardTimer, soundContext, preference, playbackAttempt = 0;
-try { preference = localStorage.getItem(soundKey); } catch {}
 let musicEnabled = false;
+const playheadKey = soundKey + ':playhead';
+try { preference = localStorage.getItem(soundKey); } catch {}
 musicTrack.volume = .40;
 function updateSoundButton() {
-  musicButton.textContent = musicEnabled ? 'Audio on' : preference === 'off' ? 'Audio off' : 'Enable audio';
+  musicButton.textContent = musicEnabled ? '🔊 Sound on' : preference === 'off' ? '🔇 Sound off' : '🔊 Enable sound';
   musicButton.setAttribute('aria-pressed', String(musicEnabled));
 }
 function unlockEffects() {
@@ -144,11 +145,16 @@ function syncMusic() {
     if (attempt !== playbackAttempt) return;
     musicEnabled = false;
     updateSoundButton();
-    musicButton.textContent = 'Retry audio';
+    if (preference === 'on') musicButton.textContent = '🔊 Tap for sound';
   });
+}
+function setSoundPreference(option) {
+  preference = option;
+  try { localStorage.setItem(soundKey, option); } catch {}
 }
 function enableAudioOnPlay() {
   if (preference === 'off') return;
+  if (preference !== 'on') setSoundPreference('on');
   unlockEffects();
   if (!musicEnabled) {
     musicEnabled = true;
@@ -156,17 +162,42 @@ function enableAudioOnPlay() {
     syncMusic();
   }
 }
+function restorePlayhead() {
+  try {
+    const position = Number(sessionStorage.getItem(playheadKey));
+    if (Number.isFinite(position) && position > 0 && Number.isFinite(musicTrack.duration)) {
+      musicTrack.currentTime = position % musicTrack.duration;
+    }
+  } catch {}
+}
+musicTrack.addEventListener('loadedmetadata', restorePlayhead, {once:true});
+window.addEventListener('pagehide', () => {
+  try {
+    if (musicEnabled && musicTrack.currentTime > 0) sessionStorage.setItem(playheadKey, String(musicTrack.currentTime));
+  } catch {}
+});
+window.addEventListener('pageshow', event => {
+  if (!event.persisted) return;
+  try { preference = localStorage.getItem(soundKey); } catch {}
+  musicEnabled = preference === 'on';
+  updateSoundButton();
+  syncMusic();
+});
 musicButton.addEventListener('click', () => {
-  preference = musicEnabled ? 'off' : 'on';
-  try { localStorage.setItem(soundKey, preference); } catch {}
+  setSoundPreference(musicEnabled ? 'off' : 'on');
   if (preference === 'on') enableAudioOnPlay();
   else { musicEnabled = false; updateSoundButton(); syncMusic(); }
 });
+if (preference === 'on') {
+  musicEnabled = true;
+  if (musicTrack.readyState > 0) restorePlayhead();
+  syncMusic();
+}
 updateSoundButton();
 document.addEventListener('visibilitychange', syncMusic);
 function playReward(kind) {
   if (!musicEnabled || !soundContext || soundContext.state !== 'running') return;
-  const notes = kind === 'coin' ? [880,1320] : kind === 'nice' ? [660,880] : [523,659,784,1047];
+  const notes = kind === "miss" ? [330,247] : kind === 'coin' ? [880,1320] : kind === 'nice' ? [660,880] : [523,659,784,1047];
   for (const [i,hz] of notes.entries()) {
     const start = soundContext.currentTime + i*.065;
     const oscillator = soundContext.createOscillator(), gain = soundContext.createGain();
@@ -225,45 +256,7 @@ let practiceIndex = dailyIndex;
 let selected;
 let streak = 0;
 let best = 0;
-let sound = false;
-let audio;
-try {
-  best = Number(localStorage.getItem('stack-sprint-best')) || 0;
-  sound = localStorage.getItem('stack-sprint-sound') === 'on';
-} catch {}
-function updateSound() {
-  el('sound').textContent = sound ? 'Sound on' : 'Sound off';
-  el('sound').setAttribute('aria-pressed', String(sound));
-}
-function playSound(notes) {
-  if (!sound) return;
-  const Audio = window.AudioContext || window.webkitAudioContext;
-  if (!Audio) return;
-  try {
-    audio ||= new Audio();
-    if (audio.state === 'suspended') audio.resume().catch(() => {});
-    notes.forEach((frequency, i) => {
-      const oscillator = audio.createOscillator();
-      const volume = audio.createGain();
-      const start = audio.currentTime + i * 0.085;
-      oscillator.type = 'triangle';
-      oscillator.frequency.value = frequency;
-      volume.gain.setValueAtTime(0.001, start);
-      volume.gain.linearRampToValueAtTime(0.13, start + 0.02);
-      volume.gain.exponentialRampToValueAtTime(0.001, start + 0.15);
-      oscillator.connect(volume).connect(audio.destination);
-      oscillator.start(start);
-      oscillator.stop(start + 0.16);
-    });
-  } catch {}
-}
-el('sound').addEventListener('click', () => {
-  sound = !sound;
-  try { localStorage.setItem('stack-sprint-sound', sound ? 'on' : 'off'); } catch {}
-  updateSound();
-  playSound([440, 660]);
-});
-updateSound();
+try { best = Number(localStorage.getItem('stack-sprint-best')) || 0; } catch {}
 el('date').textContent = new Intl.DateTimeFormat('en',{dateStyle:'medium',timeZone:'UTC'}).format(new Date(day));
 function render() {
   const [code, answers, correct, explanation] = puzzles[index];
@@ -299,7 +292,7 @@ function render() {
         best = Math.max(best, streak);
         try { localStorage.setItem('stack-sprint-best', String(best)); } catch {}
       }
-      if(!won)playSound([220, 165]);
+      if(!won)playReward("miss");
       if(won)showReward(mode==='practice' && streak>1 ? "★ "+streak+" correct in a row" : "✓ Correct answer!");
       const arcade = el('arcade');
       arcade.classList.remove('win', 'miss');
@@ -341,6 +334,7 @@ for (const event of ['pause', 'ended', 'error', 'waiting']) {
   });
 }
 function speakInvitation() {
+  if (preference === 'off') return;
   const status = el('host-status');
   status.textContent = '';
   if (invitationAudio.readyState > 0) invitationAudio.currentTime = 0;
